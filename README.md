@@ -1,2 +1,2 @@
 # az_framework
-Simple lightweight modern component framework
+Simple lightweight modern component PHP framework
