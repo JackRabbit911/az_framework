@@ -15,17 +15,28 @@ class Dir
         $includes = new FilesystemIterator($dir);
 
         foreach ($includes as $include) {
-
             if(is_dir($include) && !is_link($include)) {
-
                 $this->removeAll($include);
-            }
-            else {
+            } else {
                 unlink($include);
             }
         }
 
         rmdir($dir);
+    }
+
+    public function clearDir($dir)
+    {
+        $iterator = new FilesystemIterator($dir);
+       
+        foreach ($iterator as $include) {
+            if(is_dir($include) && !is_link($include)) {
+                $this->clearDir($include);
+                rmdir($include);
+            } else {
+                unlink($include);
+            }           
+        }
     }
 
     public function removeEmpty($dir)
@@ -92,13 +103,16 @@ class Dir
         return $i;
     }
 
-    public function clearByMask(string $dir, $mask): void
+    public function clearByMask(string $dir, $mask)
     {
         $files = glob(trim($dir, '/') . '/' . $mask, GLOB_BRACE);
+        $count = count($files);
 
         foreach ($files as $file) {
             unlink($file);
         }
+
+        return $count;
     }
 
     public function getByMask(string $dir, $mask, $sort = false): array

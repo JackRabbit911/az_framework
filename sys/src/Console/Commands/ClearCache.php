@@ -2,8 +2,10 @@
 
 namespace Sys\Console\Commands;
 
+use Modules\Image\Repo;
 use Sys\Config\Cache as CacheConfig;
 use Sys\Console\Command;
+use Sys\Helper\Facade\Dir;
 
 final class ClearCache extends Command
 {
@@ -20,12 +22,18 @@ final class ClearCache extends Command
             exit;
         }
 
-        call([__CLASS__, $func]);
-        $this->climate->out("Cache '$func' was cleared");
+        $out = call([__CLASS__, $func]);
+        $out = (($out)) ?: "Cache '$func' was cleared";
+        $this->climate->out($out);
     }
 
     public function config(CacheConfig $cacheConfig)
     {
         $cacheConfig->clearCacheFile();
+    }
+
+    public function img(Repo $repo)
+    {
+        $repo->clearCache();
     }
 }
