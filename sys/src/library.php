@@ -26,7 +26,7 @@ function env(?string $path = null, $default = null): mixed
     static $env;
 
     if (!$env) {
-        $env = Yaml::parseFile(APPPATH . '.env', Yaml::PARSE_CONSTANT);
+        $env = Yaml::parseFile(ROOTPATH . '.env', Yaml::PARSE_CONSTANT);
     }
 
     return ($path) ? dot($env, $path, $default) : $env;
