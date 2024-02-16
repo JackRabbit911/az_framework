@@ -2,10 +2,6 @@
 
 namespace Az\Validation;
 
-use Closure;
-use ReflectionMethod;
-use ReflectionFunction;
-
 final class Message
 {
     public array $keys = [];
@@ -48,56 +44,7 @@ final class Message
     {
         foreach ($this->msgPath as $path) {
             $file = trim($path, '/') . '/' . $this->lang . '.php';
-            // dd($path, $file, is_file($file));
             $this->messages = array_replace($this->messages, require $file);
         }
     }
-
-    // private function getKeyParams($name, $e)
-    // {
-    //     if (is_array($e->handler) && method_exists($e->handler[0], $e->handler[1])) {
-    //         $reflect = new ReflectionMethod($e->handler[0], $e->handler[1]);
-    //     } elseif (is_string($e->handler)) {
-    //         if (function_exists($e->handler)) {
-    //             $reflect = new ReflectionFunction($e->handler);
-    //         } else {
-    //             $reflect = new ReflectionMethod($e->handler);
-    //         } 
-    //     } elseif ($e->handler instanceof Closure) {
-    //         $reflect = new ReflectionFunction($e->handler);
-    //     }
-
-    //     if (isset($reflect)) {
-    //         $msgKey = $this->keys[$name] ?? $reflect->getShortName();
-
-    //         foreach ($reflect->getParameters() as $k => $refParam) {
-    //             $key = ':' . $refParam->getName();
-
-    //             if (!array_key_exists($k, $e->params)) {
-    //                 if ($refParam->isDefaultValueAvailable()) {
-    //                     $value = $refParam->getDefaultValue();
-    //                 }
-    //             } else {
-    //                 $value = $e->params[$k];
-    //             }
-
-    //             if (isset($value) && is_scalar($value)) {
-    //                 $result[$key] = $value;
-    //             }
-    //         }
-
-    //         $result[':name'] = $name;
-
-    //         $msgParams = $result ?? [];
-    //     } else {
-    //         $msgKey = $this->keys[$name] ??  $e->handler[1] ?? 'default';
-    //         $msgParams = [];
-    //     }
-
-    //     if (isset($e->key) && is_string($e->key)) {
-    //         $msgKey = $e->key;
-    //     }
-
-    //     return [$msgKey, $msgParams];
-    // }
 }
