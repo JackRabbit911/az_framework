@@ -21,7 +21,7 @@ final class CreateDB extends Command
     public function execute($dbname, $password, $username)
     {
         $connect = env('connect.mysql');
-        $config = Yaml::parseFile(PROJECTROOT . 'docker-compose.yml');
+        $config = Yaml::parseFile(dirname(ROOTPATH) . 'docker-compose.yml');
         $dbname = (empty($dbname)) ? $connect['database'] : $dbname;
 
         $data = [
