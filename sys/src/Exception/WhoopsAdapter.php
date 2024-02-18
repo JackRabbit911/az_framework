@@ -22,11 +22,13 @@ final class WhoopsAdapter implements SetErrorHandlerInterface
         $this->emitter = $emitter;
         $this->responseFactory = $response_factory;
 
-        $accept_header = $request->getHeaderLine('accept');
+        $accept_header = $request->getHeaderLine('Accept');
 
         $whoops = new Whoops;
 
-        if (\Whoops\Util\Misc::isAjaxRequest() || strpos($accept_header, 'application/json') === 0) {
+        if (\Whoops\Util\Misc::isAjaxRequest() 
+            || strpos($accept_header, 'application/json') === 0
+            || getMode() === 'api') {
             $whoops->pushHandler(new \Whoops\Handler\JsonResponseHandler);
             $responseType = ResponseType::json;
         } elseif (\Whoops\Util\Misc::isCommandLine()) {
