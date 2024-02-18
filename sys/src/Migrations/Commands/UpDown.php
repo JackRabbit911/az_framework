@@ -13,7 +13,7 @@ final class UpDown extends Command
     use UpDownTrait;
     use ClassNameTrait;
 
-    private string $dir = APPPATH . 'app/storage/migrations/';
+    private string $dir = APPPATH . 'app/migrations/';
 
     protected function configure()
     {

@@ -6,7 +6,7 @@ class CreateMigration
 {
     use ClassNameTrait;
 
-    private string $dir = APPPATH . 'app/storage/migrations/';
+    private string $dir = APPPATH . 'app/migrations/';
 
     public function create(string $pattern, string $path = ''): array
     {

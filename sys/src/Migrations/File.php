@@ -4,7 +4,7 @@ namespace Sys\Migrations;
 
 final class File
 {
-    private string $dir = APPPATH . 'app/storage/migrations/';
+    private string $dir = APPPATH . 'app/migrations/';
 
     public function __construct()
     {

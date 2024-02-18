@@ -9,7 +9,7 @@ final class Show extends Command
 {
     use UpDownTrait;
 
-    private string $dir = APPPATH . 'app/storage/migrations/';
+    private string $dir = APPPATH . 'app/migrations/';
 
     protected function configure()
     {
