@@ -12,7 +12,7 @@ class Cron extends Command
 {
     const WORKING = 1;
     const STOPPED = 0;
-    const STATUSFILE = APPPATH . 'writable/cronstatus.txt';
+    const STATUSFILE = WRITABLE . 'cronstatus.txt';
 
     public string $statusFile;
     private int $waitTimeQueue = 5;
