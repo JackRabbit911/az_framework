@@ -28,15 +28,19 @@ final class Media implements MiddlewareInterface
         $lifetime = $params['lifetime'] ?? 0;
 
         if (!is_file($file)) {
-            $file = SYSPATH . $file;
+            $file = WRITABLE . $file;
+        }
 
-            if (!is_file($file)) {
-                $file = str_replace(SYSPATH, APPPATH, $file);
+        if (!is_file($file)) {
+            $file = SYSPATH . 'vendor/az/sys/src/' . $file;
+        }
 
-                if (!is_file($file)) {
-                    return $this->factory->createResponse(ResponseType::html, 404, 'File not found');
-                }
-            }
+        if (!is_file($file)) {
+            $file = APPPATH . $file;
+        }
+
+        if (!is_file($file)) {
+            return $this->factory->createResponse(ResponseType::html, 404, 'File not found');
         }
 
         return new FileResponse($file, (integer) $lifetime);

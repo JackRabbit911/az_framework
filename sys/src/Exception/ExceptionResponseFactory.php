@@ -13,11 +13,6 @@ final class ExceptionResponseFactory implements HttpExceptionInterface
 {
     private $view = SYSPATH . 'vendor/az/sys/src/Exception/views/http.php';
 
-    // public function __construct(string $view = SYSPATH . 'vendor/az/sys/src/Exception/views/http.php')
-    // {
-    //     $this->view = $view;
-    // }
-
     public function createResponse(ResponseType $responseType, int $code = 200, string $reasonPhrase = ''): ResponseInterface
     {
         if ($reasonPhrase === '') {

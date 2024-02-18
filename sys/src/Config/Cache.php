@@ -6,7 +6,7 @@ use ErrorException;
 
 final class Cache
 {
-    private string $cacheFile = APPPATH . 'app/storage/cache/config.php';
+    private string $cacheFile = APPPATH . 'writable/cache/config.php';
     public ?array $cacheMemory = null;
 
     public function get($file = null)

@@ -6,7 +6,7 @@ use Psr\Http\Message\UploadedFileInterface;
 
 class UploadedFileSave
 {
-    protected $path = 'app/storage/uploads/';
+    protected $path = WRITABLE . 'uploads/';
     protected $hashFileName = true;
     protected array|string $clientFilename;
     private $file;
