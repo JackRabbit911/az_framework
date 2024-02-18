@@ -99,7 +99,7 @@ final class WhoopsAdapter implements SetErrorHandlerInterface
     private function pushLogHandler(Whoops $whoops, LoggerInterface $logger)
     {
         $whoops->pushHandler(function ($exception, $inspector, $run) use ($logger) {
-            $file = str_replace(DOCROOT, '', $exception->getFile());
+            $file = str_replace(realpath(ROOTPATH), '', $exception->getFile());
             $logger->error($inspector->getExceptionMessage().' '.$file, [$exception->getLine()]);
         });
     }
