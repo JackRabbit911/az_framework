@@ -22,6 +22,7 @@ final class File
 
         foreach ($this->paths as $dir) {
             $list = glob($dir . $pattern, GLOB_BRACE);
+            
             if (!empty($list)) {
                 $ext = pathinfo($list[0], PATHINFO_EXTENSION);
                 $content = ($ext === 'yml') ? Yaml::parseFile($list[0], Yaml::PARSE_CONSTANT) : require $list[0];

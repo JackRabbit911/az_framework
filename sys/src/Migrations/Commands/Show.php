@@ -3,13 +3,12 @@
 namespace Sys\Migrations\Commands;
 
 use Sys\Migrations\UpDownTrait;
-use Sys\Console\Command;
 
-final class Show extends Command
+final class Show extends MigrationsCommandAbstract
 {
     use UpDownTrait;
 
-    private string $dir = APPPATH . 'app/migrations/';
+    protected string $dir;
 
     protected function configure()
     {

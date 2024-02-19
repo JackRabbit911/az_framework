@@ -6,10 +6,12 @@ class CreateMigration
 {
     use ClassNameTrait;
 
-    private string $dir = APPPATH . 'app/migrations/';
+    private string $dir;
 
     public function create(string $pattern, string $path = ''): array
     {
+        $this->dir = config('common', 'migrations_dir') ?? APPPATH . 'app/migrations/';
+
         $pattern = preg_replace('/\s+/', ' ', $pattern);
 
         if ($path === '' && str_contains($pattern, ' ')) {

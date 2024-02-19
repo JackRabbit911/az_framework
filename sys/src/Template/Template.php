@@ -8,10 +8,10 @@ use Twig\TwigFunction;
 class Template
 {
     private $engine;
-    private $ext;
-    private $path;
+    private string $ext;
+    private string $path = '';
 
-    public function __construct($engine, string $ext = null)
+    public function __construct($engine, $ext)
     {
         $this->engine = $engine;
         $this->ext = $ext;
@@ -41,11 +41,8 @@ class Template
 
     public function render(string $view, array $params = [])
     {
-        $ext = pathinfo('app/views/bs/home', PATHINFO_EXTENSION);
-
-        if (empty($ext)) {
-            $ext = $this->ext;
-        }
+        $ext = pathinfo($view, PATHINFO_EXTENSION);
+        $ext = (($ext)) ?: $this->ext;
         
         $view = ltrim($this->path . ltrim($view, '/'));
         return $this->engine->render($view . '.' .$ext, $params);

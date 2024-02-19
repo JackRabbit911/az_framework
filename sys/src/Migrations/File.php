@@ -4,10 +4,12 @@ namespace Sys\Migrations;
 
 final class File
 {
-    private string $dir = APPPATH . 'app/migrations/';
+    private string $dir;
 
     public function __construct()
     {
+        $this->dir = config('common', 'migrations_dir') ?? APPPATH . 'app/migrations/';
+
         if (!is_dir($this->dir)) {
             mkdir($this->dir, 0777, true);
         }

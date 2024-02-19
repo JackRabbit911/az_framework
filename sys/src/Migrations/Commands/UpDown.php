@@ -6,14 +6,11 @@ use Sys\Migrations\ModelMigrations;
 use Sys\Migrations\ClassNameTrait;
 use Sys\Migrations\UpDownTrait;
 use Sys\Console\CallApi;
-use Sys\Console\Command;
 
-final class UpDown extends Command
+final class UpDown extends MigrationsCommandAbstract
 {
     use UpDownTrait;
     use ClassNameTrait;
-
-    private string $dir = APPPATH . 'app/migrations/';
 
     protected function configure()
     {

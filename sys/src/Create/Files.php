@@ -4,8 +4,14 @@ namespace Sys\Create;
 
 final class Files
 {
-    private string $appPath2blanks = APPPATH . 'app/config/create/blanks/';
-    private string $sysPath2blanks = SYSPATH . 'vendor/az/sys/src/Create/blanks/';
+    private string $appPath2blanks;
+    private string $sysPath2blanks;
+
+    public function __construct()
+    {
+        $this->appPath2blanks = config('common', 'create.blanks');
+        $this->sysPath2blanks = __DIR__ . '/blanks/';
+    }
     
     public function create(string $path, string $name, array $types, array $paths)
     {

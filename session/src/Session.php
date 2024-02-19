@@ -31,11 +31,9 @@ final class Session implements SessionInterface
 
     private $saveHandler;
 
-    public function __construct(
-        ?SessionHandlerInterface $save_handler = null, 
-        ?string $config = APPPATH . 'app/config/session.php')
+    public function __construct(array $options, ?SessionHandlerInterface $save_handler = null)
     {
-        $this->options($config);
+        $this->options($options);
 
         if ($save_handler) {
             session_set_save_handler($save_handler, true);
