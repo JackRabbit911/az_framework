@@ -6,13 +6,13 @@ use PDO;
 
 trait Schema
 {
-    public function tables(string $name = null)
+    public function tables(string $prefix = null)
     {
         if (isset($this->cache['schema']['tables'])) {
             return $this->cache['schema']['tables'];
         }
 
-        $suffix = (!empty($name)) ? " like '$name'" : '';
+        $suffix = (!empty($prefix)) ? " like '$prefix%'" : '';
         $sql = "SHOW TABLES" . $suffix;
 
         $sth = $this->qb->pdo()->query($sql);

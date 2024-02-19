@@ -16,7 +16,7 @@ class Tables extends Command
     public function execute($name)
     {
         $call = new CallApi(ModelMigrations::class, 'tables');
-        $tables = $call->execute(['name' => $name]);
+        $tables = $call->execute(['prefix' => $name]);
 
         $this->climate->out('Tables list:');
         $this->climate->border('=', 30);

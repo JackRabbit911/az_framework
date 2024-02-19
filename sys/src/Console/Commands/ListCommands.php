@@ -15,7 +15,7 @@ class ListCommands extends Command
             ->get('commands');
 
         foreach ($commands as $command => $class) {
-            $help = (new $class)->getHelp();
+            $help = $class; //(new $class)->getHelp();
             $result[] = [$command, $help];
         }
 

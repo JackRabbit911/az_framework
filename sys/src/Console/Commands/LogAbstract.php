@@ -10,7 +10,8 @@ abstract class LogAbstract extends Command
 
     protected function configure()
     {
-        $this->addArgument('file', 'Name of the logfile without extension', '')
+        $this->setHelp('Show or clear Log file. Arguments:')
+            ->addArgument('file', 'Name of the logfile without extension', '')
             ->addArgument('lines', 'Number of last rows to be shown', 0);
     }
 

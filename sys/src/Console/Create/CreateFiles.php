@@ -9,6 +9,7 @@ class CreateFiles extends Command
 {
     protected function configure()
     {
+        $this->help = 'Arguments: name types';
         $this
             ->addArgument('name', 'Сommon name for group files')
             ->addArgument('types', 'Types of files: controller, entity etc..', [])

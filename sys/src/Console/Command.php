@@ -32,7 +32,7 @@ abstract class Command
 
         if (isset($this->input->opts['help']))
         {
-            $this->climate->out($this->help);
+            $this->help();
             exit;
         }
 
@@ -87,6 +87,39 @@ abstract class Command
                     . $this->parser->getDescription($name) . ')');
                 $this->input->args[$name] = $input->prompt();
             }
+        }
+    }
+
+    private function help()
+    {
+        $help = $this->getHelp();
+        $this->climate->out($help);
+
+        if (!empty ($this->parser->setArgs)) {
+            $this->climate->out('Arguments:');
+        }
+
+        foreach ($this->parser->setArgs as $arg)
+        {
+            $default = match (true) {
+                is_array($arg['default']) => '[]',
+                $arg['default'] === null => 'null',
+                default => $arg['default'],
+            };
+
+            $this->climate->tab()->out($arg['desc'] . '(default value: ' . $default . ')');
+        }
+
+        if (!empty ($this->parser->setOpts)) {
+            $this->climate->out('Options:');
+        }
+
+        foreach ($this->parser->setOpts as $name => $opt)
+        {
+            $alias = array_search($name, $this->parser->aliases);
+            $alias = ($alias) ? "(--$alias)" : '';
+
+            $this->climate->tab()->out("-$name $alias, {$opt['desc']}");
         }
     }
 }
