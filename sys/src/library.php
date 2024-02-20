@@ -67,7 +67,7 @@ function dot(&$arr, $path, $default = null, $separator = '.') {
     return $arr;
 }
 
-function getMode()
+function getMode(?string $path = null)
 {
     static $mode;
 
@@ -80,7 +80,7 @@ function getMode()
         return $mode;
     }
 
-    $arrMode = config('mode', null, []);
+    $arrMode = ($path) ? require $path : config('mode', null, []);
 
     foreach ($arrMode as $key => $paths) {
         foreach ($paths as $path) {

@@ -11,10 +11,9 @@ final class ContainerFactory
     private $container;
     private string $mode;
 
-    public function __construct($mode = 'web')
+    public function __construct(string $mode)
     {
         $this->mode = $mode;
-        // $this->mode = getMode();
     }
 
     public function create(ContainerBuilder $builder): Container
