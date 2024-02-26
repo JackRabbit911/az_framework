@@ -16,7 +16,7 @@ final class ModelCreateDB
 
     public function create(string $dbname, string $password, ?string $username = null)
     {
-        $username = ($username) ?: $dbname;
+        $username = (($username)) ?: $dbname;
 
         $sth = $this->pdo->query("SHOW DATABASES like '$dbname'");
         $dbs = $sth->fetchAll(PDO::FETCH_COLUMN);
@@ -32,5 +32,14 @@ final class ModelCreateDB
         } else {
             return false;
         }
+    }
+
+    public function dbExists(string $dbname)
+    {
+        $sql = "SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = '$dbname'";
+        $sth = $this->pdo->query($sql);
+        $dbs = $sth->fetchColumn();
+
+        return !empty($dbs);
     }
 }
