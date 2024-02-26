@@ -15,6 +15,12 @@ final class ModelMigrations
 
     public function get($path)
     {
+        $tables = $this->tables('migrations');
+        
+        if (empty($tables)) {
+            return [];
+        }
+
         $select = $this->qb->table($this->table)
             ->select(['name', 'path']);
         
