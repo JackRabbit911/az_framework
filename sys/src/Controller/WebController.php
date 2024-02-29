@@ -23,18 +23,20 @@ abstract class WebController extends BaseController
     protected $user;
     protected ?I18n $i18n;
 
-    public function &__get($name)
+    public function __construct()
     {
-        return $this->$name;
+        $this->tpl = container()->get(Template::class);
     }
+
+    // public function &__get($name)
+    // {
+    //     return $this->$name;
+    // }
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        $this->tpl = container()->get(Template::class);
-
         if (($this->session = $request->getAttribute('session'))) {
             $this->tpl->addGlobal('session', $this->session);
-            // $this->tpl->addGlobal('form', new Form($this->session));
         }
 
         $this->user = $request->getAttribute('user');
