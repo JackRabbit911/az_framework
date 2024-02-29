@@ -13,7 +13,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Sys\FileResponse;
 use Sys\I18n\I18n;
-use Sys\Template\Form;
+// use Sys\Template\Form;
 use Sys\Template\Template;
 
 abstract class WebController extends BaseController
@@ -34,7 +34,7 @@ abstract class WebController extends BaseController
 
         if (($this->session = $request->getAttribute('session'))) {
             $this->tpl->addGlobal('session', $this->session);
-            $this->tpl->addGlobal('form', new Form($this->session));
+            // $this->tpl->addGlobal('form', new Form($this->session));
         }
 
         $this->user = $request->getAttribute('user');
