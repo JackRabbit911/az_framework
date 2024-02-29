@@ -84,7 +84,7 @@ function getMode(?string $path = null)
 
     foreach ($arrMode as $key => $paths) {
         foreach ($paths as $path) {
-            if (strpos($_SERVER['REQUEST_URI'], $path) === 0) {
+            if (strpos($_SERVER['REQUEST_URI'], $path . '/') === 0) {
                 $mode = $key;
                 return $mode;
             }
@@ -128,6 +128,7 @@ function url($routeName = null, $params = [])
 
 function findPath($path, $all = false)
 {
+    // $paths = [CONFIG];
     $paths = glob(APPPATH . '*{\/src,}/' . ltrim($path, '/'), GLOB_BRACE);
 
     foreach ($paths as $path) {

@@ -29,28 +29,28 @@ final class Routes extends Command
     {
         $this->route = $routeCollection;
 
-        $file = findPath("config/routes/common.php");
-        if ($file && is_file($file)) {
+        $file = CONFIG . "routes/common.php";
+        if (is_file($file)) {
             require_once $file;
         }
 
         if ($this->input->opts['all'] || $this->input->opts['web']) {
-            $file = findPath("config/routes/web.php");
-            if ($file && is_file($file)) {
+            $file = CONFIG . "routes/web.php";
+            if (is_file($file)) {
                 require_once $file;
             }
         }
 
         if ($this->input->opts['all'] || $this->input->opts['cli']) {
-            $file = findPath("config/routes/cli.php");
-            if ($file && is_file($file)) {
+            $file = CONFIG . "routes/cli.php";
+            if (is_file($file)) {
                 require_once $file;
             }
         }
 
         if ($this->input->opts['all'] || $this->input->opts['api']) {
-            $file = findPath("config/routes/api.php");
-            if ($file && is_file($file)) {
+            $file = CONFIG . "routes/api.php";
+            if (is_file($file)) {
                 require_once $file;
             }
         }

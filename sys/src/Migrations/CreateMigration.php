@@ -10,7 +10,7 @@ class CreateMigration
 
     public function create(string $pattern, string $path = ''): array
     {
-        $this->dir = config('common', 'migrations_dir') ?? APPPATH . 'app/migrations/';
+        $this->dir = config('common', 'migrations_dir') ?? CONFIG . 'migrations/';
 
         $pattern = preg_replace('/\s+/', ' ', $pattern);
 

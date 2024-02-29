@@ -24,7 +24,7 @@ final class ContainerFactory
 
         $builder->useAttributes(true);
 
-        $path = findPath('config/container/');
+        $path = CONFIG . 'container/';
 
         if (is_file(($common = $path . 'common.php'))) {
             $builder->addDefinitions(require_once $common);

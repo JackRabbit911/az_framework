@@ -53,23 +53,23 @@ final class App
     {
         $mode = getMode();
 
-        $file = findPath("config/pipeline/$mode.php");
+        $file = CONFIG . "pipeline/$mode.php";
         if ($file && is_file($file)) {
             require_once $file;
         }
 
-        $file = findPath("config/pipeline/common.php");
+        $file = CONFIG . "pipeline/common.php";
         if ($file && is_file($file)) {
             require_once $file;
         }
 
-        $file = findPath("config/routes/common.php");
+        $file = CONFIG . "routes/common.php";
         if ($file && is_file($file)) {
             require_once $file;
         }
 
-        $file = findPath("config/routes/$mode.php");
-        if ($file && is_file($file)) {
+        $file = CONFIG . "routes/$mode.php";
+        if (is_file($file)) {
             require_once $file;
         }
 

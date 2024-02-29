@@ -8,7 +8,7 @@ final class File
 
     public function __construct()
     {
-        $this->dir = config('common', 'migrations_dir') ?? APPPATH . 'app/migrations/';
+        $this->dir = config('common', 'migrations_dir') ?? CONFIG . 'migrations/';
 
         if (!is_dir($this->dir)) {
             mkdir($this->dir, 0777, true);
