@@ -313,11 +313,13 @@ final class Route implements RouteInterface
             }
         }
 
-        if (is_array($this->handler) && !method_exists($this->handler[0], $this->handler[1])) {
-            return false;
-        }
+        if (is_array($this->handler)) {
+            if (!method_exists($this->handler[0], $this->handler[1])) {
+                return false;
+            }
 
-        RouteAttribute::setByAttribute($this);
+            RouteAttribute::setByAttribute($this);
+        }
 
         if (!$this->checkHost($request) || !$this->checkTokens() || !$this->checkAjax($request)
             || !$this->checkFilters($request) || !$this->checkMethod($request)) {
