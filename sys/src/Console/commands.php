@@ -41,6 +41,7 @@ return [
     'process:task' => TaskWorker::class,
     'do:migrate' => UpDown::class,
     'show:migrations' => ShowMigrations::class,
+    'show:mgrt' => ShowMigrations::class,
     'show:routes' => Routes::class,
     'show:tables' => Tables::class,
     'show:tasks' => ShowTasks::class,

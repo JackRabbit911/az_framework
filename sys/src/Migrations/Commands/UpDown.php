@@ -19,16 +19,28 @@ final class UpDown extends MigrationsCommandAbstract
 
     public function execute($array)
     {
+        if (empty($array)) {
+            $this->warning('Too few arguments for this command');
+        }
+
         $array = (is_array($array)) ? $array : [$array];
         
         array_walk($array, function (&$v) {
             $v = strtolower($v);
         });
 
-        if (array_intersect($array, ['up', 'down'])) {
-            $result = $this->doUpDown($array);
-        } else {
-            $result = $this->files($array);
+        try {
+            if (array_intersect($array, ['up', 'down'])) {
+                $result = $this->doUpDown($array);
+            } else {
+                $result = $this->files($array);
+            }
+        } catch(\UnexpectedValueException $e) {
+            $this->warning();
+        }
+
+        if (!$result[0] || empty($result[1])) {
+            $this->warning();
         }
 
         $data['sql'] = $result[0];
@@ -133,5 +145,12 @@ final class UpDown extends MigrationsCommandAbstract
         ];
 
         return [$sql, $data];
+    }
+
+    private function warning(string $msg = 'Arguments is incorrect')
+    {
+        $msg = "<light_red>WARNING!</light_red> $msg";
+        $this->climate->out($msg);
+        exit;
     }
 }
