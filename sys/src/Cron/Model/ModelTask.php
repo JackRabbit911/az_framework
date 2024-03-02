@@ -20,12 +20,12 @@ class ModelTask implements Saveble
 
     protected string $table = 'tasks';
     private Expression $expression;
-    private Logger $logger;
+    // private Logger $logger;
 
     public function __construct(Expression $expression)
     {
         $this->expression = $expression;
-        $this->logger = container()->make('logger', config('cron', 'logger'));
+        // $this->logger = container()->make('logger', config('cron', 'logger'));
     }
 
     public function getActualTasks(int $wait_time = 20): array
