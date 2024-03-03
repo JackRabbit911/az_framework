@@ -19,19 +19,19 @@ final class Session implements SessionInterface
     private array $options = [
         'name'          => 'SID',
         'save_path'     => WRITABLE . 'sessions',
-        'gc_maxlifetime' => 120,
+        'gc_maxlifetime' => 3600,
         'gc_probability' => 0,
         'gc_divisor'     => 100,
     ];
 
     private array $session;
     private int $regenerate = 20;
-    private bool $guard_agent = true;
+    private bool $guard_agent = false;
     private bool $guard_ip = false;
 
     private $saveHandler;
 
-    public function __construct(array $options, ?SessionHandlerInterface $save_handler = null)
+    public function __construct(?array $options = null, ?SessionHandlerInterface $save_handler = null)
     {
         $this->options($options);
 
