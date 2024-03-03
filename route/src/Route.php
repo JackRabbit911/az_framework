@@ -246,14 +246,18 @@ final class Route implements RouteInterface
 
     public function unPipe(...$params)
     {
+        $collection = container()->get(RouteCollectionInterface::class);
+        
         foreach ($params as $middleware) {
+            $collection->unPipe($middleware, $this->groupPrefix);
+
             $key = array_search($middleware, $this->pipeline);
 
             if ($key) {
                 unset($this->pipeline[$key]);
             }
         }
-
+        
         return $this;
     }
 
@@ -317,6 +321,8 @@ final class Route implements RouteInterface
             if (!method_exists($this->handler[0], $this->handler[1])) {
                 return false;
             }
+
+            // dd($this->handler, $this->pipeline);
 
             RouteAttribute::setByAttribute($this);
         }

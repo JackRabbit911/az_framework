@@ -54,6 +54,21 @@ final class RouteCollection implements RouteCollectionInterface
         // return ($prefix === null) ? $this->middlewares : $this->middlewares[$prefix] ?? [];
     }
 
+    public function unPipe($middleware, $groupPrefix = '')
+    {
+        foreach ($this->pipeline as $key => &$pipe) {
+            if (is_array($pipe)) {
+                if ($pipe[0] === $groupPrefix && $pipe[1] === $middleware) {
+                    unset($this->pipeline[$key]);
+                }
+            } else {
+                if ($pipe === $middleware) {
+                    unset($this->pipeline[$key]);
+                }
+            }
+        }
+    }
+
     public function methods(...$methods)
     {
         $this->methods[$this->groupPrefix] = $methods;
