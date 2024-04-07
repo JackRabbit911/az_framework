@@ -239,3 +239,8 @@ function render($file, $data)
     include $file;
     return ob_get_clean();
 }
+
+function request()
+{
+    return $GLOBALS['request'] ?? container()->get(ServerRequestInterface::class);
+}

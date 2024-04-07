@@ -16,15 +16,9 @@ use DI\FactoryInterface;
 
 final class RouteDispatchMiddleware implements MiddlewareInterface
 {  
-    /**
-     * @var MiddlewareResolverInterface
-     */
     private MiddlewareResolverInterface $resolver;
     private ContainerInterface|InvokerInterface|FactoryInterface $container;
 
-    /**
-     * @param MiddlewareResolverInterface $resolver
-     */
     public function __construct(
         MiddlewareResolverInterface $resolver, 
         ContainerInterface $container)
@@ -33,11 +27,6 @@ final class RouteDispatchMiddleware implements MiddlewareInterface
         $this->container = $container;
     }
 
-    /**
-     * {@inheritDoc}
-     *
-     * @psalm-suppress MixedAssignment
-     */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         if (!$route = $request->getAttribute(Route::class)) {
@@ -46,14 +35,15 @@ final class RouteDispatchMiddleware implements MiddlewareInterface
 
         $routeHandler = $this->resolve($request, $route->getHandler());
 
+        $request = $request->withAttribute(Route::class, $route);
+        $GLOBALS['request'] = &$request;
+
         $middleware = $this->resolver->resolve($routeHandler);
         return $middleware->process($request, $handler);
     }
 
     private function resolve(&$request, $handler)
     {       
-        // $handler = $this->parseHandlerString($handler);
-
         if (is_array($handler) && isset($handler[1]) && is_string($handler[1])) {
             $controller = $this->container->get($handler[0]);
 
@@ -71,21 +61,4 @@ final class RouteDispatchMiddleware implements MiddlewareInterface
         
         return $handler;
     }
-
-    // private function parseHandlerString($handler)
-    // {
-    //     if (!is_string($handler)) {
-    //         return $handler;
-    //     }
-
-    //     if (strpos($handler, '::')) {
-    //         return explode('::', $handler);
-    //     }
-
-    //     if (strpos($handler, '@')) {
-    //         return explode('@', $handler);
-    //     }
-
-    //     return $handler;
-    // } 
 }

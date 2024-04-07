@@ -15,6 +15,8 @@ use Sys\Exception\SetErrorHandlerInterface;
 
 final class App
 {
+    private const NO_BODY_RESPONSE_CODES = [100, 101, 102, 204, 205, 304];
+
     private ServerRequestInterface $request;
     private RouteCollectionInterface $route;
     private MiddlewarePipelineInterface $pipeline;
@@ -75,6 +77,14 @@ final class App
 
         $response = $this->pipeline->process($this->request, $this->defaultHandler);
         $response = $this->postProcess->process($response, $mode);
-        $this->emitter->emit($response);
+        $this->emitter->emit($response, $this->isResponseWithoutBody(
+            (string) request()->getMethod(),
+            (int) $response->getStatusCode(),
+        ));
+    }
+
+    private function isResponseWithoutBody(string $requestMethod, int $responseCode): bool
+    {
+        return (strtoupper($requestMethod) === 'HEAD' || in_array($responseCode, self::NO_BODY_RESPONSE_CODES, true));
     }
 }
