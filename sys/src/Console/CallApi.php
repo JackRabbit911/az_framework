@@ -17,7 +17,7 @@ final class CallApi
     {
         $path = ltrim(str_replace('\\', '/', $this->classname), '/') . '/' . $this->method;
 
-        $client = new \GuzzleHttp\Client(['base_uri' => env('host') . '/api/console/']);
+        $client = new \GuzzleHttp\Client(['base_uri' => env('APP_HOST') . '/api/console/']);
         $response = $client->post($path, ['json' => $data]);
 
         return json_decode($response->getBody()->getContents(), true);

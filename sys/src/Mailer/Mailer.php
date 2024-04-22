@@ -27,7 +27,7 @@ class Mailer
 
     public function __construct()
     {
-        $settings = env('mail');
+        $settings = config('mail/mail');
         $this->is_smtp = $settings['is_smtp'];
         $debug = (IS_DEBUG) ? true : null;
         $debug = true;
@@ -43,14 +43,14 @@ class Mailer
 
             if ($settings['smtp_auth']) {
                 $this->mailer->SMTPAuth = true;
-                $this->mailer->Username = $settings['mailboxes'][0]['address'];
-                $this->mailer->Password = $settings['mailboxes'][0]['password'];
+                $this->mailer->Username = $settings['from_address'];
+                $this->mailer->Password = $settings['password'];
                 $this->mailer->SMTPSecure = $this->smtp_secure;
             }            
         }
 
         $this->mailer->isHTML($this->is_html);
-        $this->mailer->setFrom($settings['mailboxes'][0]['address'], $settings['mailboxes'][0]['name']);
+        $this->mailer->setFrom($settings['from_address'], $settings['from_name']);
     }
 
     public function send(Mail $mail)

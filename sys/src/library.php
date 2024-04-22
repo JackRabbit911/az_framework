@@ -5,6 +5,7 @@ use Sys\I18n\I18n;
 use Az\Validation\Csrf;
 use Az\Route\RouteCollectionInterface;
 use Az\Session\SessionInterface;
+use Dotenv\Dotenv;
 use Psr\Http\Message\ServerRequestInterface;
 use Symfony\Component\Yaml\Yaml;
 use Sys\App;
@@ -22,15 +23,33 @@ function dd(...$values)
     exit;
 }
 
-function env(?string $path = null, $default = null): mixed
+function env(string $key, $default = null)
 {
-    static $env;
+    static $entries;
 
-    if (!$env) {
-        $env = Yaml::parseFile(APPPATH . '.env', Yaml::PARSE_CONSTANT);
+    if (!$entries) {
+        $entries = (Dotenv::createImmutable(APPPATH))->load();
     }
 
-    return ($path) ? dot($env, $path, $default) : $env;
+    if (isset($entries[$key])) {
+        $entry = trim($entries[$key]);
+    } else {
+        $entry = $default;
+    }
+
+    $entry = match ($entry) {
+        'on', 'yes', 'true' => true,
+        'no', 'off', 'false' => false,
+        default => $entry,
+    };
+
+    if (is_string($entry) && preg_match('/\{(.+?)\}/', $entry, $matches)) {
+        $entry = $matches[1];
+        $dc = get_defined_constants(true)['user'];
+        $entry = $dc[$entry];
+    }
+
+    return $entry;
 }
 
 function container()
