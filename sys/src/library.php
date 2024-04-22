@@ -22,6 +22,31 @@ function dd(...$values)
     exit;
 }
 
+function enva(string $key, $default = null)
+{
+    $entries = $GLOBALS['env'];
+
+    if (isset($entries[$key])) {
+        $entry = trim($entries[$key]);
+    } else {
+        $entry = $default;
+    }
+
+    $entry = match ($entry) {
+        'on', 'yes', 'true' => true,
+        'no', 'off', 'false' => false,
+        default => $entry,
+    };
+
+    if (is_string($entry) && preg_match('/\{(.+?)\}/', $entry, $matches)) {
+        $entry = $matches[1];
+        $dc = get_defined_constants(true)['user'];
+        $entry = $dc[$entry];
+    }
+
+    return $entry;
+}
+
 function env(?string $path = null, $default = null): mixed
 {
     static $env;
