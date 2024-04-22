@@ -49,7 +49,7 @@ final class WhoopsAdapter implements SetErrorHandlerInterface
             ini_set('display_errors', 0);     
             $this->pushHttpHandler($whoops, $responseType);
             
-            if (env('env') <= PRODUCTION) {
+            if (env('APP_ENV') <= PRODUCTION) {
                 $this->pushRollbackHandler($whoops);
             }
         }
@@ -120,8 +120,7 @@ final class WhoopsAdapter implements SetErrorHandlerInterface
     private function setEditor(PrettyPageHandler $handler)
     {
         $handler->setEditor(function ($file, $line) {
-            $ide = env('ide');
-            $file = str_replace($ide['search'], $ide['replace'], $file);           
+            $file = str_replace(env('IDE_SEARCH'), env('IDE_REPLACE'), $file);
             return $file . ':' . $line;
         });
     }

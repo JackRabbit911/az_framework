@@ -5,6 +5,7 @@ use Sys\I18n\I18n;
 use Az\Validation\Csrf;
 use Az\Route\RouteCollectionInterface;
 use Az\Session\SessionInterface;
+use Dotenv\Dotenv;
 use Psr\Http\Message\ServerRequestInterface;
 use Symfony\Component\Yaml\Yaml;
 use Sys\App;
@@ -22,9 +23,13 @@ function dd(...$values)
     exit;
 }
 
-function enva(string $key, $default = null)
+function env(string $key, $default = null)
 {
-    $entries = $GLOBALS['env'];
+    static $entries;
+
+    if (!$entries) {
+        $entries = (Dotenv::createImmutable(APPPATH))->load();
+    }
 
     if (isset($entries[$key])) {
         $entry = trim($entries[$key]);
@@ -45,17 +50,6 @@ function enva(string $key, $default = null)
     }
 
     return $entry;
-}
-
-function env(?string $path = null, $default = null): mixed
-{
-    static $env;
-
-    if (!$env) {
-        $env = Yaml::parseFile(APPPATH . '.env', Yaml::PARSE_CONSTANT);
-    }
-
-    return ($path) ? dot($env, $path, $default) : $env;
 }
 
 function container()

@@ -15,9 +15,6 @@ final class ContainerFactory
     public function __construct(string $mode)
     {
         $this->mode = $mode;
-
-        $dotenv = Dotenv::createImmutable(APPPATH, '.env.dotenv');
-        $GLOBALS['env'] = $dotenv->load();
     }
 
     public function create(ContainerBuilder $builder): Container

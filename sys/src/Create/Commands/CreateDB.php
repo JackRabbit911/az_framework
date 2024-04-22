@@ -3,7 +3,6 @@
 namespace Sys\Create\Commands;
 
 use Sys\Console\Command;
-use Symfony\Component\Yaml\Yaml;
 use Sys\Console\CallApi;
 use Sys\Create\ModelCreateDB;
 
@@ -13,22 +12,17 @@ final class CreateDB extends Command
     {
         $this->addArgument('dbname', 'Database name', '')
             ->addArgument('password', 'Password for database', '')
-            ->addArgument('username', 'Username for database', '')
-            // ->addOption(['interactive', 'i'], 'Interactive mode flag')
-            ;
+            ->addArgument('username', 'Username for database', '');
     }
 
     public function execute($dbname, $password, $username)
     {
-        // dd(realpath('../' . ROOTPATH));
-        $connect = env('connect.mysql');
-        $config = Yaml::parseFile('../' . ROOTPATH . 'docker-compose.yml');
-        $dbname = (empty($dbname)) ? $connect['database'] : $dbname;
+        $connect = config('database', 'connect.mysql');
 
         $data = [
             'host' => $connect['host'],
-            'root_password' => $config['services']['mysql']['environment']['MYSQL_ROOT_PASSWORD'],
-            'dbname' => $dbname,
+            'root_password' => $connect['root_password'],
+            'dbname' => (empty($dbname)) ? $connect['database'] : $dbname,
             'password' => (empty($password)) ? $connect['password'] : $password,
             'username' => (empty($username)) ? $connect['username'] : $username,
         ];
@@ -37,11 +31,10 @@ final class CreateDB extends Command
         $res = $call->execute($data);
 
         if ($res) {
-            $this->climate->lightGreen("Database '$dbname' was created successful!");
+            $this->climate->lightGreen("Database {$data['dbname']} was created successful!");
         } else {
             $this->climate->red()->inline('Warning! ');
-            $this->climate->out("Database '$dbname' is allready esists");
+            $this->climate->out("Database '{$data['dbname']}' is allready esists");
         }
-        
     }
 }
