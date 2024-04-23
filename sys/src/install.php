@@ -75,7 +75,7 @@ if (!is_file('htdocs/www/.env')) {
             password: '12345'
         sqlite:
             driver: sqlite
-            database: writable/data/data.sdb
+            database: storage/data/data.sdb
         memcache:
             server: localhost
             port: 11211

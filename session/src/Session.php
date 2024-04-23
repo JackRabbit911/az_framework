@@ -18,7 +18,7 @@ final class Session implements SessionInterface
 
     private array $options = [
         'name'          => 'SID',
-        'save_path'     => WRITABLE . 'sessions',
+        'save_path'     => STORAGE . 'sessions',
         'gc_maxlifetime' => 3600,
         'gc_probability' => 0,
         'gc_divisor'     => 100,

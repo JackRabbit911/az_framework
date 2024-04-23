@@ -6,7 +6,7 @@ use ErrorException;
 
 final class Cache
 {
-    private string $cacheFile = WRITABLE . 'cache/config.php';
+    private string $cacheFile = STORAGE . 'cache/config.php';
     public ?array $cacheMemory = null;
 
     public function get($file = null)

@@ -28,7 +28,7 @@ final class Media implements MiddlewareInterface
         $lifetime = $params['lifetime'] ?? 0;
 
         if (!is_file($file)) {
-            $file = WRITABLE . $file;
+            $file = STORAGE . $file;
         }
 
         if (!is_file($file)) {

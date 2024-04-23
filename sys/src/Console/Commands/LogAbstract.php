@@ -6,7 +6,7 @@ use Sys\Console\Command;
 
 abstract class LogAbstract extends Command
 {
-    protected string $path = WRITABLE . 'logs/';
+    protected string $path = STORAGE . 'logs/';
 
     protected function configure()
     {

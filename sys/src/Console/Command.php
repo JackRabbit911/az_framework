@@ -9,7 +9,7 @@ use Throwable;
 
 abstract class Command
 {
-    // const LOGPATH = APPPATH . 'writable/logs/';
+    // const LOGPATH = APPPATH . 'storage/logs/';
 
     protected Argv $parser;
     protected CLImate $climate;
