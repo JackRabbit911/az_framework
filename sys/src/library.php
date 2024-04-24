@@ -28,7 +28,7 @@ function env(string $key, $default = null)
     static $entries;
 
     if (!$entries) {
-        $entries = (Dotenv::createImmutable(APPPATH))->load();
+        $entries = (Dotenv::createImmutable(ENVPATH))->load();
     }
 
     if (isset($entries[$key])) {
