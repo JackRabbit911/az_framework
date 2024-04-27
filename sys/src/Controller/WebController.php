@@ -15,6 +15,7 @@ use Sys\FileResponse;
 use Sys\I18n\I18n;
 // use Sys\Template\Form;
 use Sys\Template\Template;
+use Sys\Template\App;
 
 abstract class WebController extends BaseController
 {
@@ -46,6 +47,11 @@ abstract class WebController extends BaseController
         });
 
         $this->tpl->addGlobal('uri', $request->getUri()->getPath());
+
+        $app = container()->get(App::class);
+        $this->tpl->addGlobal('app', $app);
+
+        $app->add('request', $request);
 
         return parent::process($request, $handler);
     }

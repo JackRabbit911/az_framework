@@ -10,6 +10,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Symfony\Component\Yaml\Yaml;
 use Sys\App;
 use Sys\Config\Config;
+use Sys\Template\Template;
 
 function dd(...$values)
 {
@@ -262,4 +263,15 @@ function render($file, $data)
 function request()
 {
     return $GLOBALS['request'] ?? container()->get(ServerRequestInterface::class);
+}
+
+function view(string $view, array $params = []): string
+{
+    static $tpl;
+
+    if (!$tpl) {
+        $tpl = container()->get(Template::class);
+    }
+
+    return $tpl->render($view, $params);
 }

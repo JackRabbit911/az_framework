@@ -39,7 +39,7 @@ class Template
         $this->path = trim($path, '/') . '/';
     }
 
-    public function render(string $view, array $params = [])
+    public function render(string $view, array $params = []): string
     {
         $ext = pathinfo($view, PATHINFO_EXTENSION);
         $ext = (($ext)) ?: $this->ext;
