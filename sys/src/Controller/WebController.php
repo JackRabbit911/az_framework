@@ -19,47 +19,17 @@ use Sys\Template\App;
 
 abstract class WebController extends BaseController
 {
-    protected ?SessionInterface $session;
     protected ?Template $tpl;
-    protected $user;
-    protected ?I18n $i18n;
 
-    public function __construct(Template $tpl)
-    {
-        $this->tpl = $tpl;
-    }
+    // public function __construct(Template $tpl)
+    // {
+    //     $this->tpl = $tpl;
+    // }
 
-    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
-    {
-        if (($this->session = $request->getAttribute('session'))) {
-            $this->tpl->addGlobal('session', $this->session);
-        }
-
-        $this->user = $request->getAttribute('user');
-        $this->tpl->addGlobal('user', $this->user);
-
-        if (($this->i18n = $request->getAttribute('i18n'))) {
-            $this->tpl->addGlobal('i18n', $this->i18n);
-        }
-
-        $this->tpl->addFunction('__', function ($string, $values = null) {
-            return (isset($this->i18n)) ? $this->i18n->gettext($string, $values) : $string;
-        });
-
-        $this->tpl->addGlobal('uri', $request->getUri()->getPath());
-
-        $app = container()->get(App::class);
-        $this->tpl->addGlobal('app', $app);
-
-        $app->add('request', $request);
-
-        return parent::process($request, $handler);
-    }
-
-    protected function render(string $view, array $params = []): ResponseInterface
-    {
-        return new HtmlResponse($this->tpl->render($view, $params));
-    }
+    // protected function render(string $view, array $params = []): ResponseInterface
+    // {
+    //     return new HtmlResponse($this->tpl->render($view, $params));
+    // }
 
     protected function text(string $string): ResponseInterface
     {
@@ -86,7 +56,7 @@ abstract class WebController extends BaseController
         return new FileResponse($file, $lifetime);
     }
 
-    protected function html(string $string): ResponseInterface
+    protected function html($string): ResponseInterface
     {
         return new HtmlResponse($string);
     }

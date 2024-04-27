@@ -10,6 +10,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Symfony\Component\Yaml\Yaml;
 use Sys\App;
 use Sys\Config\Config;
+use Sys\SimpleRequest;
 use Sys\Template\Template;
 
 function dd(...$values)
@@ -260,9 +261,22 @@ function render($file, $data)
     return ob_get_clean();
 }
 
-function request()
+function request($psr = false)
 {
-    return $GLOBALS['request'] ?? container()->get(ServerRequestInterface::class);
+    static $simple_request;
+
+    if ($psr == false && $simple_request) {
+        return $simple_request;
+    }
+
+    $request = &$GLOBALS['request'] ?? container()->get(ServerRequestInterface::class);
+
+    if ($psr === false) {
+        $simple_request = new SimpleRequest($request);
+        return $simple_request;
+    }
+
+    return $request;
 }
 
 function view(string $view, array $params = []): string

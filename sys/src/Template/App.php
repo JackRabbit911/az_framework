@@ -35,4 +35,9 @@ class App
 
         return null;
     }
+
+    public function request($psr = false)
+    {
+        return request($psr);
+    }
 }
