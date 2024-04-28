@@ -47,7 +47,7 @@ final class Files
             $data = $this->getData($dir, $filesname, $paths['model']);
             $content = render($this->getBlank($type), $data);
 
-            $res = file_put_contents($file, $content);
+            $res = file_put_contents(APPPATH . $file, $content);
 
             if ($res) {
                 $success[] = $file;

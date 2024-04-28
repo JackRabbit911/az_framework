@@ -2,12 +2,12 @@
 
 namespace <?=$namespace?>;
 
-use Az\Validation\ValidationMiddleware;
+use Az\Validation\Middleware\ValidationMiddleware;
 
 final class <?=$classname?> extends ValidationMiddleware
 {
     protected function setRules()
     {
-        $this->validation->rule();
+        $this->validation->rule('fieldname', 'required|minLength(8)');
     }
 }
