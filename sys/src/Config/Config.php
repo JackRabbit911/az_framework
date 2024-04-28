@@ -13,7 +13,8 @@ final class Config
 
     public function __construct(Cache $cache, File $repo)
     {
-        $this->paths += glob(APPPATH . '*{\/src,}/config/', GLOB_BRACE|GLOB_ONLYDIR);
+        $this->paths += glob(APPPATH . '**{\/**,}/config/', GLOB_BRACE|GLOB_ONLYDIR);
+        // $this->paths += glob(APPPATH . '*{\/src,}/config/', GLOB_BRACE|GLOB_ONLYDIR);
         $this->cache = $cache;
         $this->repo = $repo;
 

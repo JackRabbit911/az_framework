@@ -18,6 +18,10 @@ class App
 
     public function cmp($class, array $attributes = [])
     {
+        if (class_exists($class)) {
+            return container()->make($class, $attributes);
+        }
+
         $class = ucfirst($class);
 
         foreach(glob(APPPATH . '**/Component/*.php') as $file) {
