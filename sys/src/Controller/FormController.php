@@ -7,14 +7,14 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Sys\Template\Form;
-use Sys\Template\Template;
 
 abstract class FormController extends WebController
 {
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        if (($this->session = $request->getAttribute('session'))) {
-            $this->tpl->addGlobal('form', new Form($this->session));
+        if (($session = $request->getAttribute('session'))) {
+            $tpl = $request->getAttribute('tpl');
+            $tpl->addGlobal('form', new Form($session));
         }
 
         return parent::process($request, $handler);

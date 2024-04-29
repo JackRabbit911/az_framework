@@ -29,6 +29,8 @@ final class WebTemplateGlobals implements MiddlewareInterface
         });
 
         $this->tpl->addGlobal('app', $this->app);
-        return $handler->handle($request);
+        return $handler->handle($request
+            ->withAttribute('tpl', $this->tpl)
+            ->withAttribute('app', $this->app));
     }
 }

@@ -10,7 +10,7 @@ trait InvokeTrait
 {
     private function call(string $action, array $attr = [])
     {
-        global $container;
+        $container = container();
 
         if ($container && method_exists($container, 'call')) {
             $result = $container->call([$this, $action], $attr);

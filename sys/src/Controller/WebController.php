@@ -19,17 +19,20 @@ use Sys\Template\App;
 
 abstract class WebController extends BaseController
 {
+    protected ?SessionInterface $session;
     protected ?Template $tpl;
+    protected $user;
+    protected ?I18n $i18n;
 
-    // public function __construct(Template $tpl)
-    // {
-    //     $this->tpl = $tpl;
-    // }
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
+    {
+        $this->session = $request->getAttribute('session');
+        $this->tpl = $request->getAttribute('tpl');
+        $this->user = $request->getAttribute('user');
+        $this->i18n = $request->getAttribute('i18n');
 
-    // protected function render(string $view, array $params = []): ResponseInterface
-    // {
-    //     return new HtmlResponse($this->tpl->render($view, $params));
-    // }
+        return parent::process($request, $handler);
+    }
 
     protected function text(string $string): ResponseInterface
     {
