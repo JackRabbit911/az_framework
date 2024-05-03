@@ -269,7 +269,11 @@ function request($psr = false)
         return $simple_request;
     }
 
-    $request = &$GLOBALS['request'] ?? container()->get(ServerRequestInterface::class);
+    if (isset($GLOBALS['request'])) {
+        $request = &$GLOBALS['request'];
+    } else {
+        $request = container()->get(ServerRequestInterface::class);
+    }
 
     if ($psr === false) {
         $simple_request = new SimpleRequest($request);

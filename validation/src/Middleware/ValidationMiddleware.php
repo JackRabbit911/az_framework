@@ -27,6 +27,8 @@ abstract class ValidationMiddleware implements MiddlewareInterface
         if ($this->path && $this->path !== $path) {           
             return $handler->handle($request);
         }
+
+        $GLOBALS['request'] = $request;
         
         $this->setRules();
         $data = ($request->getMethod() === 'GET') ? $request->getQueryParams() : $request->getParsedBody();
