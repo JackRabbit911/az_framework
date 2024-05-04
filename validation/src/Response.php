@@ -49,7 +49,7 @@ final class Response
             } elseif (!is_array($data[$name]) || (is_array($data[$name]) && array_is_list($data[$name]))) {
                 $this->response[$name] = [
                     'status' => 'success',
-                    'value' => $data[$name] ?? '',
+                    'value' => $data[$name] ?? false,
                     'msg' => $this->msg->get('success'),
                 ];
             }
