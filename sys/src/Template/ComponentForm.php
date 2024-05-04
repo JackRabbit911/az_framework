@@ -33,6 +33,10 @@ trait ComponentForm
                 $attribute['name'] = $key;
             }
 
+            if (!isset($attribute['label'])) {
+                $attribute['label'] = ucfirst($attribute['name']);
+            }
+
             $arr = [];
 
             foreach ($attribute as $k => &$v) {
