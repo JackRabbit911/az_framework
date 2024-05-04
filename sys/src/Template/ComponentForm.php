@@ -17,7 +17,22 @@ trait ComponentForm
     {
         $main = ['label', 'name', 'id', 'type', 'class', 'value', 'checked', 'placeholder', 'attributes'];
 
-        foreach ($data as &$attribute) {
+        foreach ($data as $key => &$attribute) {
+            if ($key === 'form') {
+                continue;
+            }
+
+            if (is_int($key)) {
+                unset($data[$key]);
+                $data[$attribute] = [];
+                $key = $attribute;
+                $attribute = [];              
+            }
+
+            if (!isset($attribute['name'])) {
+                $attribute['name'] = $key;
+            }
+
             $arr = [];
 
             foreach ($attribute as $k => &$v) {
