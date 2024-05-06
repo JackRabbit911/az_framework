@@ -6,6 +6,8 @@ use PDO;
 
 trait Schema
 {
+    private array $cache;
+    
     public function tables(string $prefix = null)
     {
         if (isset($this->cache['schema']['tables'])) {
