@@ -28,6 +28,9 @@ final class WebTemplateGlobals implements MiddlewareInterface
             return (isset($i18n)) ? $i18n->gettext($string, $values) : $string;
         });
 
+        $this->app->add('user', $request->getAttribute('user'));
+        $this->app->add('session', $request->getAttribute('session'));
+
         $this->tpl->addGlobal('app', $this->app);
         return $handler->handle($request
             ->withAttribute('tpl', $this->tpl)

@@ -105,4 +105,9 @@ class SimpleRequest
     {
         return $this->request->getAttribute(Route::class);
     }
+
+    public function serverParams(?string $key = null)
+    {
+        return ($key) ? $this->request->getServerParams()[$key] : $this->request->getServerParams();
+    }
 }
