@@ -98,7 +98,7 @@ class SimpleRequest
         $path = trim($path, '/');
         $uri = trim($this->request->getUri()->getPath(), '/');
 
-        return ($strong) ? $uri === $path : str_starts_with($uri, $path);
+        return ($strong) ? $uri === $path : explode('/', $uri)[0] === explode('/', $path)[0];
     }
 
     public function route()
@@ -109,5 +109,14 @@ class SimpleRequest
     public function serverParams(?string $key = null)
     {
         return ($key) ? $this->request->getServerParams()[$key] : $this->request->getServerParams();
+    }
+
+    public function referer($default = '/')
+    {
+        if (isset($this->request->getServerParams()['HTTP_REFERER'])) {
+            return $this->request->getServerParams()['HTTP_REFERER'];
+        }
+
+        return $default ?? path('home');
     }
 }
