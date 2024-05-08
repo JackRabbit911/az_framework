@@ -42,6 +42,15 @@ abstract class Entity implements JsonSerializable
         }
     }
 
+    public function update(array $data)
+    {
+        foreach ($data as $key => $value) {
+            $this->set($key, $value);
+        }
+
+        return $this;
+    }
+
     public function __toString()
     {
         return spl_object_hash($this);
