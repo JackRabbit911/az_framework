@@ -309,3 +309,9 @@ function abort($code = 404)
     container()->call([SapiEmitter::class, 'emit'], ['response' => $response]);
     exit;
 }
+
+function redirect($url, $code = 302)
+{
+    header('Location: ' . $url, true, $code);
+    exit;
+}
