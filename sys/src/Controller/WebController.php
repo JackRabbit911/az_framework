@@ -23,6 +23,7 @@ abstract class WebController extends BaseController
     protected ?Template $tpl;
     protected $user;
     protected ?I18n $i18n;
+    protected App $app;
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
@@ -30,6 +31,7 @@ abstract class WebController extends BaseController
         $this->tpl = $request->getAttribute('tpl');
         $this->user = $request->getAttribute('user');
         $this->i18n = $request->getAttribute('i18n');
+        $this->app = $request->getAttribute('app');
 
         return parent::process($request, $handler);
     }

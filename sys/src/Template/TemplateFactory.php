@@ -15,6 +15,11 @@ class TemplateFactory
 
         $loader = new FilesystemLoader($viewPath);
         $twig = new Environment($loader, $options);
+
+        if (ENV > PRODUCTION) {
+            $twig->addExtension(new \Twig\Extension\DebugExtension());
+        }
+
         
         $twig->addFunction(new TwigFunction('path', function ($routeName, $params = []) {
             return path($routeName, $params);
