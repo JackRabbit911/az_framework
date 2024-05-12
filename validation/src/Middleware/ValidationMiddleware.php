@@ -33,6 +33,8 @@ abstract class ValidationMiddleware implements MiddlewareInterface
 
         $data = $this->validate($request, $data);
 
+        $this->debug();
+
         $GLOBALS['request'] = $request;
 
         return ($data) ? $handler->handle($request
@@ -66,4 +68,6 @@ abstract class ValidationMiddleware implements MiddlewareInterface
         $session->flash('validation', $this->validation->getResponse());
         return new RedirectResponse($request->getServerParams()['HTTP_REFERER'], 302);
     }
+
+    protected function debug() {}
 }
