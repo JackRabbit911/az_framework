@@ -28,7 +28,7 @@ abstract class ValidationMiddleware implements MiddlewareInterface
             return $handler->handle($request);
         }
         
-        $this->setRules();
+        $this->setRules($request);
         $data = ($request->getMethod() === 'GET') ? $request->getQueryParams() : $request->getParsedBody();
 
         $data = $this->validate($request, $data);
@@ -43,7 +43,7 @@ abstract class ValidationMiddleware implements MiddlewareInterface
 
     protected function setPath() {}
 
-    protected function setRules() {}
+    protected function setRules(ServerRequestInterface $request) {}
 
     protected function modifyData($data) {
         return $data;
