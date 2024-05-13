@@ -13,15 +13,6 @@ abstract class Entity implements JsonSerializable
 
     protected array $_data = [];
 
-    public function __construct(?array $data = null)
-    {
-        if ($data) {
-            foreach ($data as $key => $value) {
-                $this->set($key, $value);
-            }
-        }
-    }
-
     public function save($model = null)
     {
         CommitListener::update($this, $model);
