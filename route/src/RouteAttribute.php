@@ -10,6 +10,10 @@ final class RouteAttribute
         $reflect = new \ReflectionMethod($handler[0], $handler[1]);
         $attribute = $reflect->getAttributes($route::class)[0] ?? null;
 
+        // if ($route->getName() === 'auth') {
+            // dd($attribute);
+        // }
+
         if (empty($attribute)) {
             return;
         }

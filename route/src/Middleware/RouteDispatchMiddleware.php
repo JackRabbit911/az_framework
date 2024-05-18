@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Az\Route\Middleware;
 
+use Az\Route\NormalizeResponse;
 use Az\Route\Route;
 use HttpSoft\Runner\MiddlewareResolverInterface;
 use Invoker\InvokerInterface;
@@ -15,7 +16,9 @@ use Psr\Container\ContainerInterface;
 use DI\FactoryInterface;
 
 final class RouteDispatchMiddleware implements MiddlewareInterface
-{  
+{
+    use NormalizeResponse;
+
     private MiddlewareResolverInterface $resolver;
     private ContainerInterface|InvokerInterface|FactoryInterface $container;
 
@@ -33,30 +36,34 @@ final class RouteDispatchMiddleware implements MiddlewareInterface
             return $handler->handle($request);
         }
 
-        $routeHandler = $this->resolve($request, $route->getHandler());
-
-        $request = $request->withAttribute(Route::class, $route);
         $GLOBALS['request'] = &$request;
 
+        $routeHandler = $this->resolve($request, $route->getHandler());
         $middleware = $this->resolver->resolve($routeHandler);
+
         return $middleware->process($request, $handler);
     }
 
     private function resolve(&$request, $handler)
-    {       
-        if (is_array($handler) && isset($handler[1]) && is_string($handler[1])) {
-            $controller = $this->container->get($handler[0]);
-
-            if ($controller instanceof MiddlewareInterface || $controller instanceof RequestHandlerInterface) {
-                $request = $request->withAttribute('action', $handler[1]);
-                return $controller;
-            }
-
-            return [$this->container->get($handler[0]), $handler[1]];
+    {
+        if (defined('STRICT_MODE') && STRICT_MODE === true) {
+            return $handler;
         }
 
-        if (is_string($handler) && class_exists($handler)) {
-            return $this->container->get($handler);
+        if (is_array($handler)) {
+            $controller = $handler[0];
+            $action = $handler[1] ?? '__invoke';
+
+            if (method_exists($controller, $action)) {
+                if (is_a($controller, MiddlewareInterface::class, true) 
+                || is_a($controller, RequestHandlerInterface::class, true)) {
+                    $request = $request->withAttribute('action', $action);
+                } else {
+                    $handler = new HandlerWrapperMiddleware($this->container, [$controller, $action]);
+                }
+            }
+        } elseif (is_callable($handler)) {
+            $handler = new HandlerWrapperMiddleware($this->container, $handler);
         }
         
         return $handler;
