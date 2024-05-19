@@ -6,10 +6,6 @@ use Az\Route\Route;
 
 use HttpSoft\Message\ServerRequest;
 use HttpSoft\Message\UriFactory;
-
-// use HttpSoft\Message\Uri;
-// use Tests\Mock\Uri;
-// use Tests\Az\Route\RouteDataProvider;
 use PHPUnit\Framework\Attributes\DataProviderExternal;
 use PHPUnit\Framework\TestCase;
 
@@ -22,16 +18,139 @@ final class RouteTest extends TestCase
         $this->request = new ServerRequest();
     }
 
-    // public function testGetName()
-    // {
-    //     $route = new Route('/test', 'Class::method', 'test.route');
+    public function testGetName()
+    {
+        $route = new Route('/test', 'Class::method', 'test.route');
+        $name = $route->getName();
 
-    //     $name = $route->getName();
-    //     $handler = $route->getHandler();
+        $this->assertSame('test.route', $name);
+    }
 
-    //     $this->assertSame('test.route', $name);
-    //     $this->assertSame('Class::method', $handler);
-    // }
+    public function testGetHandler()
+    {
+        $route = new Route('/test', 'Class::method', 'test.route');
+        $handler = $route->getHandler();
+        $this->assertSame(['Class', 'method'], $handler);
+
+        $route = new Route('/test', ['Class', 'method'], 'test.route');
+        $handler = $route->getHandler();
+        $this->assertSame(['Class', 'method'], $handler);
+
+        $route = new Route('/test', 'handler', 'test.other.route');
+        $handler = $route->getHandler();
+        $this->assertSame(['handler', '__invoke'], $handler);
+
+        $route = new Route('/test', function () {
+            return true;
+        });
+
+        $handler = $route->getHandler();
+        $this->assertIsCallable($handler);
+    }
+
+    public function testGetDefaults()
+    {
+        $defaults = [
+            'foo' => 'Hello',
+            'bar' => 'World',
+        ];
+
+        $route = new Route('/test/{foo?}/{bar?}', 'Class::method', 'test.route');
+        $route->defaults($defaults);
+
+        $this->assertSame($defaults, $route->getDefaults());
+    }
+
+    public function testGetMethods()
+    {
+        $route = new Route('/test/{foo?}/{bar?}', 'Class::method', 'test.route');
+        $route->methods('get', 'post');
+
+        $this->assertSame(['GET', 'POST'], $route->getMethods());
+    }
+
+    public function testMethod()
+    {
+        $route = (new Route('/', 'handler'))->methods('GET', 'post');
+        $match = $route->match($this->request->withMethod('post'));
+
+        $this->assertTrue($match);
+    }
+
+    public function testMethodFailed()
+    {
+        $route = (new Route('/', 'handler'))->methods('GET', 'post');
+        $match = $route->match($this->request->withMethod('delete'));
+
+        $this->assertFalse($match);
+    }
+
+    public function testGetTokens()
+    {
+        $tokens = ['foo' => '/[a-z]+/'];
+        $route = new Route('/test/{foo}', 'Class::method', 'test.route');
+        $route->tokens($tokens);
+
+        $this->assertSame($tokens, $route->getTokens());
+    }
+
+    #[DataProviderExternal(RouteDataProvider::class ,'tokensProvider')]
+    public function testTokens($uri, $regex, $result)
+    {
+        $uriInstance = (new UriFactory)->createUri($uri);
+        $request = $this->request->withUri($uriInstance);
+        $route = new Route('/{id}', 'handler');
+        $route->tokens(['id' => $regex]);
+        $match = $route->match($request);
+
+        $this->assertEquals($result, $match);
+    }
+
+    public function testGetHost()
+    {
+        $route = new Route('/test/{foo?}/{bar?}', 'Class::method', 'test.route');
+        $this->assertSame(null, $route->getHost());
+
+        $route->host('localhost');
+        $this->assertSame('localhost', $route->getHost());
+    }
+
+    public function testHost()
+    {
+        $uriInstance = (new UriFactory)->createUri('/foo/a/b/c');
+        $request = $this->request->withUri($uriInstance->withHost('example.com'));
+        $route = new Route('/foo/{a}/{b?}/{c?}', 'handler');
+        $route->host('example.com');
+        $match = $route->match($request);
+
+        $this->assertTrue($match);
+    }
+
+    public function testHostFailed()
+    {
+        $uriInstance = (new UriFactory)->createUri('/foo/a/b/c');
+        $request = $this->request->withUri($uriInstance->withHost('example.com'));
+        $route = new Route('/foo/{a}/{b?}/{c?}', 'handler');
+        $route->host('example.com.me');
+        $match = $route->match($request);
+
+        $this->assertFalse($match);
+    }
+
+    public function testGetPipeline()
+    {
+        $route = new Route('/test', 'Class::method', 'test.route');
+        $route->pipe('Session', 'Validation');
+        $this->assertSame(['Session', 'Validation'], $route->getPipeline());
+    }
+
+    public function testGetGroupPrefix()
+    {
+        $route = new Route('/test', 'Class::method', 'test.route');
+        $route->groupPrefix('auth');
+        $this->assertSame('auth', $route->getGroupPrefix());
+    }
+
 
     #[DataProviderExternal(RouteDataProvider::class ,'matchProvider')]
     public function testMatch($pattern, $uri, $params)
@@ -41,20 +160,34 @@ final class RouteTest extends TestCase
         $route = new Route($pattern, 'handler', 'test.route');
         $match = $route->match($request);
 
-        // var_dump($match); exit;
-
         $this->assertTrue($match);
         $this->assertSame($params, $route->getParameters());
     }
 
-    // #[DataProviderExternal(RouteDataProvider::class ,'noMatchProvider')]
-    // public function testNotMatch($pattern, $uri)
-    // {
-    //     $request = $this->request->withUri(new Uri($uri));
-    //     $route = new Route('test', $pattern, 'handler');
-    //     $match = $route->match($request);
+    #[DataProviderExternal(RouteDataProvider::class ,'notMatchProvider')]
+    public function testNotMatch($pattern, $uri)
+    {
+        $uriInstance = (new UriFactory)->createUri($uri);
+        $request = $this->request->withUri($uriInstance);
+        $route = new Route($pattern, 'handler', 'test.route');
+        $match = $route->match($request);
 
-    //     assertFalse($match);
-    //     assertSame([], $route->getParameters());
-    // }
+        $this->assertFalse($match);
+        $this->assertSame([], $route->getParameters());
+    }
+
+    #[DataProviderExternal(RouteDataProvider::class ,'pathProvider')]
+    public function testPath($pattern, $params, $path)
+    {
+        $route = new Route($pattern, 'handler');
+        $this->assertEquals($path, $route->path($params));
+    }
+
+    #[DataProviderExternal(RouteDataProvider::class ,'pathInvalidArgsProvider')]
+    public function testPathInvalidArgs($pattern, $params)
+    {
+        $route = new Route($pattern, 'handler');
+        $this->expectException(\InvalidArgumentException::class);
+        $route->path($params);
+    }
 }

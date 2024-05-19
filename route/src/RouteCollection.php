@@ -67,6 +67,8 @@ final class RouteCollection implements RouteCollectionInterface
                 }
             }
         }
+
+        $this->pipeline = array_values($this->pipeline);
     }
 
     public function methods(...$methods)

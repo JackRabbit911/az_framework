@@ -50,13 +50,9 @@ final class Route implements RouteInterface
     public function getHandler(): mixed
     {
         if (is_string($this->handler)) {
-            static $handler;
-
-            if (!$handler) {
-                $handler = str_replace('@', '::', $this->handler);
-                $handler = explode('::', $handler);
-                $handler[1] = $handler[1] ?? $this->parameters['action'] ?? '__invoke';
-            }
+            $handler = str_replace('@', '::', $this->handler);
+            $handler = explode('::', $handler);
+            $handler[1] = $handler[1] ?? $this->parameters['action'] ?? '__invoke';
 
             return $handler;
         }
@@ -141,6 +137,7 @@ final class Route implements RouteInterface
     public function ajax(?bool $value = null)
     {
         $this->ajax = $value;
+        return $this;
     }
 
     public function middleware(...$params): self
@@ -220,7 +217,7 @@ final class Route implements RouteInterface
         return (new RouteMatch($this))->path($params);
     }
 
-    public function checkMethod(ServerRequestInterface $request)
+    private function checkMethod(ServerRequestInterface $request)
     {
         if (!empty($this->methods) 
             && !in_array(strtoupper($request->getMethod()), $this->methods, true)) {
