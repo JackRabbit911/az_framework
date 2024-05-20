@@ -17,10 +17,10 @@ final class HandlerWrapperMiddleware implements MiddlewareInterface
 {
     use NormalizeResponse;
 
-    private ContainerInterface|InvokerInterface $container;
+    private ContainerInterface|InvokerInterface|null $container;
     private $handler;
 
-    public function __construct(ContainerInterface|InvokerInterface $container, mixed $handler)
+    public function __construct(ContainerInterface|InvokerInterface|null $container, mixed $handler)
     {
         $this->container = $container;
         $this->handler = $handler;
@@ -30,7 +30,38 @@ final class HandlerWrapperMiddleware implements MiddlewareInterface
     {
         $route = $request->getAttribute((Route::class));
         $params = $route->getParameters();
-        $response = $this->container->call($this->handler, $params);
+        $response = $this->call($this->handler, $params);
         return $this->normalizeResponse($request, $response);
+    }
+
+    private function call(mixed $action, array $attr = [])
+    {
+        if ($this->container && method_exists($this->container, 'call')) {
+            $result = $this->container->call($action, $attr);
+        } else {
+            $args = [];
+
+            if (is_array($action) && method_exists($action[0], $action[1])) {
+                $reflect = new \ReflectionMethod($action[0], $action[1]);
+            } elseif (is_callable($action)) {
+                $reflect = new \ReflectionFunction($action);
+            } else {
+                throw new \InvalidArgumentException('Action to call must be callable or array(class, method)');
+            }
+
+            foreach ($reflect->getParameters() as $param) {
+                $name = $param->getName();
+                $args[$name] = $attr[$name] ?? $param->getDefaultValue() ?? null;
+            }
+
+            if (is_callable($action)) {
+                $result = $reflect->invokeArgs($args);
+            } else {
+                $obj = ($this->container) ? $this->container->get($action[0]) : new $action[0];
+                $result = $reflect->invokeArgs($obj, $args);
+            }           
+        }
+
+        return $result;
     }
 }

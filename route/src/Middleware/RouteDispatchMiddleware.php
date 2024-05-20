@@ -20,11 +20,11 @@ final class RouteDispatchMiddleware implements MiddlewareInterface
     use NormalizeResponse;
 
     private MiddlewareResolverInterface $resolver;
-    private ContainerInterface|InvokerInterface|FactoryInterface $container;
+    private ContainerInterface|InvokerInterface|FactoryInterface|null $container;
 
     public function __construct(
         MiddlewareResolverInterface $resolver, 
-        ContainerInterface $container)
+        ?ContainerInterface $container = null)
     {
         $this->resolver = $resolver;
         $this->container = $container;
