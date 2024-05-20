@@ -10,28 +10,25 @@ use HttpSoft\Runner\MiddlewarePipeline;
 use Az\Route\Route;
 use Az\Route\RouteCollection;
 use Az\Route\RouteCollectionInterface;
-use HttpSoft\Runner\MiddlewarePipelineInterface;
 use HttpSoft\Runner\MiddlewareResolverInterface;
 
 final class RouteMiddleware implements MiddlewareInterface
 {
     private RouteCollection $collection;
-    private MiddlewarePipelineInterface $pipeline;
     private MiddlewareResolverInterface $resolver;
 
     public function __construct(
         RouteCollectionInterface $collection,
-        MiddlewarePipeline $pipeline,
         MiddlewareResolverInterface $resolver
     )
     {
         $this->collection = $collection;
-        $this->pipeline = $pipeline;
         $this->resolver = $resolver;
     }
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
+        $pipeline = new MiddlewarePipeline();
         $route = $request->getAttribute(Route::class);
 
         if (!$route) {
@@ -45,14 +42,14 @@ final class RouteMiddleware implements MiddlewareInterface
             $groupPrefix = $item[0];
 
             if (strpos($routePrefix, $groupPrefix) === 0) {
-                $this->pipeline->pipe($this->resolver->resolve($middleware));
+                $pipeline->pipe($this->resolver->resolve($middleware));
             }
         }
 
         foreach ($route->getPipeline() as $middleware) {
-            $this->pipeline->pipe($this->resolver->resolve($middleware));
+            $pipeline->pipe($this->resolver->resolve($middleware));
         }
 
-        return $this->pipeline->process($request, $handler);
+        return $pipeline->process($request, $handler);
     }
 }

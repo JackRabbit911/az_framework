@@ -8,63 +8,21 @@ use Az\Route\RouteCollection;
 
 final class Route implements RouteInterface
 {
-    /**
-     * @var string unique route name.
-     */
     private string $name;
-
-    /**
-     * @var string path pattern with parameters.
-     */
     private string $pattern;
-
-    /**
-     * @var mixed action, controller, callable, closure, etc.
-     */
     private $handler;
-
-    /**
-     * @var string[] allowed request methods of the route.
-     */
     private array $methods = [];
-
-    /**
-     * @var array<string, string|null> parameter names and regexp tokens.
-     */
     private array $tokens = [];
-
-    /**
-     * @var array<string, string> parameter names and default parameter values.
-     */
     private array $defaults = [];
-
-    /**
-     * @var string|null hostname or host regexp.
-     */
     private ?string $host = null;
-
-    /**
-     * @var array<string, string> matched parameter names and matched parameter values.
-     */
     private array $parameters = [];
-
     private array $filters = [];
-
     private ?bool $ajax = null;
-
     private array $pipeline = [];
-
     private string $groupPrefix = '';
 
     private RouteMatch $matcher;
 
-     /**
-     * @param string $name unique route name.
-     * @param string $pattern path pattern with parameters.
-     * @param mixed $handler action, controller, callable, closure, etc.
-     * @param array $methods allowed request methods of the route.
-     * @psalm-suppress MixedAssignment
-     */
     public function __construct(string $pattern, $handler, $name = null)
     {
         if ($name) {
@@ -84,64 +42,39 @@ final class Route implements RouteInterface
         return $this;
     }
 
-    /**
-     * Gets the unique route name.
-     *
-     * @return string
-     */
     public function getName(): string
     {
         return $this->name ?? '';
     }
 
-    /**
-     * Gets the route handler.
-     *
-     * @return mixed
-     */
     public function getHandler(): mixed
     {
+        if (is_string($this->handler)) {
+            $handler = str_replace('@', '::', $this->handler);
+            $handler = explode('::', $handler);
+            $handler[1] = $handler[1] ?? $this->parameters['action'] ?? '__invoke';
+
+            return $handler;
+        }
+        
         return $this->handler;
     }
 
-    /**
-     * Gets the matched parameters as `parameter names` => `parameter value`.
-     *
-     * The matched parameters appear may after successful execution of the `match()` method.
-     *
-     * @return array<string, string>
-     * @see match()
-     */
     public function getParameters(): array
     {
         return $this->parameters;
     }
 
-     /**
-     * Gets the default parameter values, as `parameter names` => `default values`.
-     *
-     * @return array<string, string>
-     */
     public function getDefaults(): array
     {
         return $this->defaults;
     }
 
-    /**
-     * Gets the allowed request methods of the route.
-     *
-     * @return string[]
-     */
     public function getMethods(): array
     {
         return $this->methods;
     }
 
-     /**
-     * Gets the parameter tokens, as `parameter names` => `regexp tokens`.
-     *
-     * @return array<string, string|null>
-     */
     public function getTokens(): array
     {
         return $this->tokens;
@@ -162,12 +95,6 @@ final class Route implements RouteInterface
         return $this->filters;
     }
 
-    /**
-     * Adds the parameter regexp.
-     *
-     * @param array<string, mixed> $tokens `parameter names` => `regexp tokens`
-     * @return self
-     */
     public function tokens(array $tokens): self
     {
         foreach ($tokens as $key => $token) {
@@ -182,14 +109,6 @@ final class Route implements RouteInterface
         return $this;
     }
 
-    /**
-     * Adds the default parameter values.
-     *
-     * @param array<string, mixed> $defaults `parameter names` => `default values`
-     * @return self
-     * @throws InvalidRouteParameterException if the default parameter value is not scalar.
-     * @psalm-suppress MixedAssignment
-     */
     public function defaults(array $defaults): self
     {
         foreach ($defaults as $key => $default) {
@@ -203,12 +122,6 @@ final class Route implements RouteInterface
         return $this;
     }
 
-    /**
-     * Sets the route host.
-     *
-     * @param string $host hostname or host regexp.
-     * @return self
-     */
     public function host(string $host): self
     {
         $this->host = trim($host, '/');
@@ -224,6 +137,7 @@ final class Route implements RouteInterface
     public function ajax(?bool $value = null)
     {
         $this->ajax = $value;
+        return $this;
     }
 
     public function middleware(...$params): self
@@ -277,24 +191,6 @@ final class Route implements RouteInterface
         return $this->groupPrefix;
     }
 
-    public function getSantizePrefix(ServerRequestInterface $request)
-    {
-        if (empty($this->groupPrefix) || strpos($this->groupPrefix, '{') === false) {
-            return $this->groupPrefix;
-        }
-
-        return $this->matcher->parsePrefix($request);
-    }
-
-    /**
-     * Checks whether the request URI matches the current route.
-     *
-     * If there is a match and the route has matched parameters, they will
-     * be saved and available via the `Route::getParameters()` method.
-     *
-     * @param ServerRequestInterface $request
-     * @return bool whether the route matches the request URI.
-     */
     public function match(ServerRequestInterface $request): bool
     {
         $this->matcher = new RouteMatch($this);
@@ -306,26 +202,7 @@ final class Route implements RouteInterface
 
         $this->parameters = array_filter($params) + $this->defaults;
 
-        if (is_string($this->handler)) {
-            if (str_contains($this->handler, '::')) {
-                $this->handler = explode('::', $this->handler);
-            } elseif (str_contains($this->handler, '@')) {
-                $this->handler = explode('@', $this->handler);
-            } else {
-                $this->handler = [$this->handler, $this->parameters['action'] ?? '__invoke'];
-                // unset($this->parameters['action']);
-            }
-        }
-
-        if (is_array($this->handler)) {
-            if (!method_exists($this->handler[0], $this->handler[1])) {
-                return false;
-            }
-
-            // dd($this->handler, $this->pipeline);
-
-            RouteAttribute::setByAttribute($this);
-        }
+        $this->setByAttribute();
 
         if (!$this->checkHost($request) || !$this->checkTokens() || !$this->checkAjax($request)
             || !$this->checkFilters($request) || !$this->checkMethod($request)) {
@@ -350,6 +227,28 @@ final class Route implements RouteInterface
         } 
 
         return true;
+    }
+
+    private function setByAttribute()
+    {
+        $handler = $this->getHandler();
+
+        if (is_array($handler) && method_exists($handler[0], $handler[1])) {
+            $reflect = new \ReflectionMethod($handler[0], $handler[1]);
+            $attribute = $reflect->getAttributes(__CLASS__)[0] ?? null;
+        
+            if ($attribute) {
+                $arguments = $attribute->getArguments();
+
+                foreach ($arguments as $method => $arg) {
+                    if (is_array($arg)) {
+                        call_user_func_array([$this, $method], $arg);
+                    } else {
+                        call_user_func([$this, $method], $arg);
+                    }
+                }
+            }
+        }
     }
 
     private function checkHost(ServerRequestInterface $request)

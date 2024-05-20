@@ -2,6 +2,7 @@
 
 namespace Sys\Controller;
 
+use Az\Route\NormalizeResponse;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -11,6 +12,7 @@ use Az\Route\Route;
 abstract class BaseController implements MiddlewareInterface
 {
     use InvokeTrait;
+    use NormalizeResponse;
 
     protected ServerRequestInterface $request;
     private string $action;
@@ -18,10 +20,14 @@ abstract class BaseController implements MiddlewareInterface
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         $this->request = $request;
-        $this->action = $request->getAttribute('action', '__invoke');
+        $route = $request->getAttribute(Route::class);
+        $action = $route->getHandler()[1] 
+        ?? $request->getAttribute('action') 
+        ?? $route->getParameters()['action'] ?? '__invoke';
 
         $this->_before();
-        $response = $this->call($this->action, $request->getAttribute(Route::class)->getParameters());
+        $response = $this->call($action, $request->getAttribute(Route::class)->getParameters());
+        $response = $this->normalizeResponse($request, $response);
         $this->_after($response);
         return $response;
     }

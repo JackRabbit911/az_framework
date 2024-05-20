@@ -67,6 +67,8 @@ final class RouteCollection implements RouteCollectionInterface
                 }
             }
         }
+
+        $this->pipeline = array_values($this->pipeline);
     }
 
     public function methods(...$methods)
@@ -95,9 +97,9 @@ final class RouteCollection implements RouteCollectionInterface
 
     public function add(string $pattern, $handler, $name = null): Route
     {
-        // if ($this->has($name)) {
-        //     throw new RuntimeException(sprintf('The route "%s" already exists', $name));
-        // }
+        if ($this->has($name)) {
+            throw new RuntimeException(sprintf('The route "%s" already exists', $name));
+        }
 
         $pattern = $this->groupPrefix . '/' .ltrim($pattern, '/');
         $route = new Route(rtrim($pattern, '/'), $handler, $name);
@@ -233,7 +235,6 @@ final class RouteCollection implements RouteCollectionInterface
         }
 
         return false;
-        // throw new HttpException(404, 'The requested route not match');
     }
 
     public function path(string $name, array $parameters = []): string

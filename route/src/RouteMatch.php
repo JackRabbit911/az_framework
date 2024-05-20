@@ -8,28 +8,12 @@ use Psr\Http\Message\ServerRequestInterface;
 
 final class RouteMatch
 {
-     /**
-     * The regexp pattern for placeholder (parameter name).
-     */
     private const PLACEHOLDER = '~(?:\{([\w\-]+|[^{}\?]+\?)\})~';
-
     private const DELIMETER_PLACEHOLDER = '~(?:([^\w\{\}]+)\{[\w\/\-\&\+]+\?\})~i';
-
-    /**
-     * The default regexp pattern for parameter token.
-     */
     private const DEFAULT_TOKEN = '\w+';
-
-    /**
-     * The default regexp for an empty path pattern or "/".
-     */
     private const ROOT_PATH_PATTERN = '\/?';
 
     private Route $route;
-
-    /**
-     * @var array<string> array of delimiters to the left of the optional parameters
-     */
     private array $delimeters = [];
 
     public function __construct(Route $route)
@@ -49,17 +33,17 @@ final class RouteMatch
         return false;
     }
 
-    public function parsePrefix(ServerRequestInterface $request)
-    {
-        $path = rawurldecode(rtrim($request->getUri()->getPath(), '/'));
-        $pattern = $this->santizePattern($this->route->getGroupPrefix($request));
+    // public function parsePrefix(ServerRequestInterface $request)
+    // {
+    //     $path = rawurldecode(rtrim($request->getUri()->getPath(), '/'));
+    //     $pattern = $this->santizePattern($this->route->getGroupPrefix($request));
 
-        if (preg_match('~^' . $pattern . '~i', $path, $matches)) {
-            return $matches[0];
-        }
+    //     if (preg_match('~^' . $pattern . '~i', $path, $matches)) {
+    //         return $matches[0];
+    //     }
 
-        return '';
-    }
+    //     return '';
+    // }
 
     public function path(array $params = []): string
     {
@@ -112,23 +96,11 @@ final class RouteMatch
             : self::ROOT_PATH_PATTERN;
     }
 
-    /**
-     * Gets the replacement for required parameter in the regexp.
-     *
-     * @param string $parameter
-     * @return string
-     */
     private function getReplacement(string $parameter): string
     {
         return '(?P<' . $parameter . '>' . ($this->route->getTokens()[$parameter] ?? self::DEFAULT_TOKEN) . ')';
     }
 
-    /**
-     * Gets the replacement for optional parameters in the regexp.
-     *
-     * @param string $parameters
-     * @return string
-     */
     private function getOptionalReplacement(string $parameter): string
     {
         $head = $tail = '';
@@ -146,12 +118,6 @@ final class RouteMatch
         return $head . $tail;
     }
 
-    /**
-     * Parses the optional parameters pattern.
-     *
-     * @param string $parameters
-     * @return array
-     */
     private function parsePatternOptional(string $parameter): array
     {
         $parameter = rtrim($parameter, '?');
