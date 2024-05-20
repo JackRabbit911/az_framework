@@ -12,6 +12,10 @@ use Sys\App;
 use Sys\Config\Config;
 use Sys\SimpleRequest;
 use Sys\Template\Template;
+use HttpSoft\Emitter\SapiEmitter;
+use Sys\Exception\ExceptionResponseFactory;
+use Sys\Exception\MimeNegotiator;
+use Sys\Helper\ResponseType;
 
 function dd(...$values)
 {
@@ -292,4 +296,22 @@ function view(string $view, array $params = []): string
     }
 
     return $tpl->render($view, $params);
+}
+
+function abort($code = 404)
+{
+    $accept_header = request()->header('Accept');
+    $mimeNegotiator = new MimeNegotiator($accept_header);
+    $response_type = $mimeNegotiator->getResponseType();
+    $response_type = ResponseType::from($response_type);
+    $factory = container()->get(ExceptionResponseFactory::class);
+    $response = $factory->createResponse($response_type, $code);
+    container()->call([SapiEmitter::class, 'emit'], ['response' => $response]);
+    exit;
+}
+
+function redirect($url, $code = 302)
+{
+    header('Location: ' . $url, true, $code);
+    exit;
 }

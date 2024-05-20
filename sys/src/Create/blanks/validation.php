@@ -10,4 +10,14 @@ final class <?=$classname?> extends ValidationMiddleware
     {
         $this->validation->rule('fieldname', 'required|minLength(8)');
     }
+
+    protected function modifyData()
+    {
+        
+    }
+
+//    protected function debug()
+//    {
+//        dd($data, $this->validation->getResponse());
+//    }
 }

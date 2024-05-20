@@ -24,44 +24,50 @@ abstract class ValidationMiddleware implements MiddlewareInterface
         $this->setPath();
         $path = rawurldecode(rtrim($request->getUri()->getPath(), '/'));
 
-        if ($this->path && $this->path !== $path) {           
+        if ($this->path && $this->path !== $path) {
             return $handler->handle($request);
         }
         
-        $this->setRules();
+        $this->setRules($request);
         $data = ($request->getMethod() === 'GET') ? $request->getQueryParams() : $request->getParsedBody();
 
-        $response = $this->validate($request, $handler, $data);
+        $data = $this->validate($request, $data);
+
+        $this->debug();
 
         $GLOBALS['request'] = $request;
 
-        return $response ?? $this->errorHandler($request, $data);
+        return ($data) ? $handler->handle($request
+                ->withParsedBody($data)
+                ->withAttribute('validation', $this->validation))
+            : $this->errorHandler($request);
     }
 
     protected function setPath() {}
 
-    protected function setRules() {}
+    protected function setRules(ServerRequestInterface $request) {}
 
-    protected function modifyData(& $data) {}
+    protected function modifyData($data) {
+        return $data;
+    }
 
-    protected function validate(ServerRequestInterface $request, RequestHandlerInterface $handler, array $data): ?ResponseInterface
+    protected function validate(ServerRequestInterface $request, array $data): ?array
     {
         $files = $request->getUploadedFiles();
 
         if ($this->validation->check($data, $files)) {
-            $this->modifyData($data);
-            return $handler->handle($request
-                ->withParsedBody($data)
-                ->withAttribute('validation', $this->validation));
+            return $this->modifyData($data);
         }
 
         return null;
     }
 
-    protected function errorHandler(ServerRequestInterface $request, array $data): ResponseInterface
+    protected function errorHandler(ServerRequestInterface $request): ResponseInterface
     {
         $session = $request->getAttribute('session');
         $session->flash('validation', $this->validation->getResponse());
         return new RedirectResponse($request->getServerParams()['HTTP_REFERER'], 302);
     }
+
+    protected function debug() {}
 }

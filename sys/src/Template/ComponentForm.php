@@ -6,18 +6,41 @@ use Az\Session\SessionInterface;
 
 trait ComponentForm
 {
-    private function _render($data)
+    private function _render($data, $entity = null)
     {
-        $data = $this->santize($data);
+        $data = $this->santize($data, $entity);
         $data = $this->validate($data);
         return view($this->view, $data);
     }
 
-    private function santize($data)
+    private function santize($data, $entity = null)
     {
         $main = ['label', 'name', 'id', 'type', 'class', 'value', 'checked', 'placeholder', 'attributes'];
 
-        foreach ($data as &$attribute) {
+        foreach ($data as $key => &$attribute) {
+            if ($key === 'form' || (is_string($attribute) && is_string($key))) {
+                continue;
+            }
+
+            if (is_int($key)) {
+                unset($data[$key]);
+                $data[$attribute] = [];
+                $key = $attribute;
+                $attribute = [];
+            }
+
+            if (!isset($attribute['name'])) {
+                $attribute['name'] = $key;
+            }
+
+            if (!isset($attribute['label'])) {
+                $attribute['label'] = ucfirst($attribute['name']);
+            }
+
+            if (isset($entity->$key)) {
+                $attribute['value'] = $entity->$key;
+            }
+
             $arr = [];
 
             foreach ($attribute as $k => &$v) {

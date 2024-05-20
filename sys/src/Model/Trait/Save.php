@@ -11,6 +11,10 @@ trait Save
     protected function save(Entity|array $data): mixed
     { 
         if (!is_array($data)) {
+            if (method_exists($data, 'prepareProps')) {
+                $data->prepareProps();
+            }
+
             if (method_exists($data, 'toArray')) {
                 $data = $data->toArray();
             } else {

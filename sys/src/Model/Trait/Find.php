@@ -7,8 +7,6 @@ use PDO;
 
 trait Find
 {
-    protected array $cache = [];
-
     public function find($value, $column = 'id', $cache = true): ?Entity
     {
         if ($cache && ($entity = $this->cache($value, $column))) {
