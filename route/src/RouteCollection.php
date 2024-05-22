@@ -20,6 +20,7 @@ final class RouteCollection implements RouteCollectionInterface
     private array $defaults = [];
     private array $tokens = [];
     private array $methods = [];
+    private array $allowAttribute = [];
 
     public function group(string $prefix, callable $callback): self
     {
@@ -104,6 +105,11 @@ final class RouteCollection implements RouteCollectionInterface
         $pattern = $this->groupPrefix . '/' .ltrim($pattern, '/');
         $route = new Route(rtrim($pattern, '/'), $handler, $name);
         $route->groupPrefix($this->groupPrefix);
+
+        if (isset($this->allowAttribute[$this->groupPrefix]) && $this->allowAttribute[$this->groupPrefix]) {
+            $route->allowAttribute($this->allowAttribute[$this->groupPrefix]);
+            dd($this->allowAttribute[$this->groupPrefix]);
+        }
         
         if ($name) {
             $this->routes[$name] = $route;
@@ -112,6 +118,12 @@ final class RouteCollection implements RouteCollectionInterface
         }
         
         return $route;
+    }
+
+    public function allowAttribute(bool $allow)
+    {
+        $this->allowAttribute[$this->groupPrefix] = $allow;
+        return $this;
     }
 
     public function any(string $pattern, $handler, $name = null): Route
@@ -217,6 +229,9 @@ final class RouteCollection implements RouteCollectionInterface
 
             $methods = $this->arrayMerge($route->getMethods(), $this->methods, $groupPrefix);
             call_user_func_array([$route, 'methods'], $methods);
+
+            $allowAttribute = $this->allowAttribute[$groupPrefix] ?? false || $route->allowAttribute();
+            $route->allowAttribute($allowAttribute);
 
             foreach ($this->filters as $key => $filters) {
                 if (strpos($groupPrefix, $key) === 0) {

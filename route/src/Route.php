@@ -20,6 +20,7 @@ final class Route implements RouteInterface
     private ?bool $ajax = null;
     private array $pipeline = [];
     private string $groupPrefix = '';
+    private bool $allowAttribute = false;
 
     private RouteMatch $matcher;
 
@@ -134,9 +135,19 @@ final class Route implements RouteInterface
         return $this;
     }
 
-    public function ajax(?bool $value = null)
+    public function ajax(?bool $value = null): self
     {
         $this->ajax = $value;
+        return $this;
+    }
+
+    public function allowAttribute(?bool $allow = null): self|bool
+    {
+        if ($allow === null) {
+            return $this->allowAttribute;
+        }
+
+        $this->allowAttribute = $allow;
         return $this;
     }
 
@@ -202,14 +213,16 @@ final class Route implements RouteInterface
 
         $this->parameters = array_filter($params) + $this->defaults;
 
-        $this->setByAttribute();
-
-        if (!$this->checkHost($request) || !$this->checkTokens() || !$this->checkAjax($request)
-            || !$this->checkFilters($request) || !$this->checkMethod($request)) {
-            return false;
+        if ($this->allowAttribute) {
+            $this->setByAttribute();
         }
 
-        return true;
+        if ($this->checkHost($request) && $this->checkTokens() && $this->checkAjax($request)
+            && $this->checkFilters($request) && $this->checkMethod($request)) {
+            return true;
+        }
+
+        return false;
     }
 
     public function path(array $params = []): string
@@ -235,9 +248,9 @@ final class Route implements RouteInterface
 
         if (is_array($handler) && method_exists($handler[0], $handler[1])) {
             $reflect = new \ReflectionMethod($handler[0], $handler[1]);
-            $attribute = $reflect->getAttributes(__CLASS__)[0] ?? null;
+            $attributes = $reflect->getAttributes(__CLASS__) ?? [];
         
-            if ($attribute) {
+            foreach ($attributes as $attribute) {
                 $arguments = $attribute->getArguments();
 
                 foreach ($arguments as $method => $arg) {
