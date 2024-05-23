@@ -12,7 +12,7 @@ interface RouteInterface
 
     public function getParameters(): array;
 
-    public function match(ServerRequestInterface $request): bool;
+    public function match(ServerRequestInterface &$request): bool;
 
     public function path(array $params): string;
 }

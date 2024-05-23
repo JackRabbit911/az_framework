@@ -45,7 +45,7 @@ final class ControllerAttribute implements MiddlewareInterface
         if (is_array($routeHandler)) {
             [$controller, $method] = $routeHandler;
             $rc = new ReflectionClass($controller);
-            $rm = new ReflectionMethod($controller, $method);
+            $rm = $request->getAttribute('reflection_method') ?? new ReflectionMethod($controller, $method);
 
             $attributes = array_merge($rc->getAttributes(), $rm->getAttributes());
            

@@ -219,7 +219,7 @@ final class RouteCollection implements RouteCollectionInterface
         $this->routes = [];
     }
 
-    public function match(ServerRequestInterface $request)
+    public function match(ServerRequestInterface &$request)
     {
         foreach ($this->routes as $route) {
             $groupPrefix = $route->getGroupPrefix();

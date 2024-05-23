@@ -202,7 +202,7 @@ final class Route implements RouteInterface
         return $this->groupPrefix;
     }
 
-    public function match(ServerRequestInterface $request): bool
+    public function match(ServerRequestInterface &$request): bool
     {
         $this->matcher = new RouteMatch($this);
         $params = $this->matcher->parse($request, $this->pattern);
@@ -214,11 +214,16 @@ final class Route implements RouteInterface
         $this->parameters = array_filter($params) + $this->defaults;
 
         if ($this->allowAttribute) {
-            $this->setByAttribute();
+            $reflection_method = $this->setByAttribute();
         }
 
         if ($this->checkHost($request) && $this->checkTokens() && $this->checkAjax($request)
             && $this->checkFilters($request) && $this->checkMethod($request)) {
+
+            if (isset($reflection_method)) {
+                $request = $request->withAttribute('reflection_method', $reflection_method);
+            }
+
             return true;
         }
 
@@ -262,6 +267,8 @@ final class Route implements RouteInterface
                 }
             }
         }
+
+        return $reflect ?? null;
     }
 
     private function checkHost(ServerRequestInterface $request)
