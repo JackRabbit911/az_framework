@@ -72,7 +72,8 @@ final class RouteTest extends TestCase
     public function testMethod()
     {
         $route = (new Route('/', 'handler'))->methods('GET', 'post');
-        $match = $route->match($this->request->withMethod('post'));
+        $request = $this->request->withMethod('post');
+        $match = $route->match($request);
 
         $this->assertTrue($match);
     }
@@ -80,7 +81,8 @@ final class RouteTest extends TestCase
     public function testMethodFailed()
     {
         $route = (new Route('/', 'handler'))->methods('GET', 'post');
-        $match = $route->match($this->request->withMethod('delete'));
+        $request = $this->request->withMethod('delete');
+        $match = $route->match($request);
 
         $this->assertFalse($match);
     }

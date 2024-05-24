@@ -26,7 +26,8 @@ final class File
             if (!empty($list)) {
                 $ext = pathinfo($list[0], PATHINFO_EXTENSION);
                 $content = ($ext === 'yml') ? Yaml::parseFile($list[0], Yaml::PARSE_CONSTANT) : require $list[0];
-                $result = array_merge($content, $result);
+                
+                $result = (is_array($content)) ? array_merge($content, $result) : $result;
             }
         }
 
