@@ -24,7 +24,7 @@ final class Session implements SessionInterface
         'gc_divisor'     => 100,
     ];
 
-    private array $session;
+    private array $session = [];
     private int $regenerate = 20;
     private bool $guard_agent = false;
     private bool $guard_ip = false;
