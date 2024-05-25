@@ -107,7 +107,7 @@ abstract class Command
                 default => $arg['default'],
             };
 
-            $this->climate->tab()->out($arg['desc'] . '(default value: ' . $default . ')');
+            $this->climate->tab()->out($arg['desc'] . ' (default value: ' . $default . ')');
         }
 
         if (!empty ($this->parser->setOpts)) {
