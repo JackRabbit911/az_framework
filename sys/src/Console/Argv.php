@@ -10,9 +10,6 @@ final class Argv
     public array $setOpts = [];
     public array $aliases;
 
-    // public array $args;
-    // public array $opts;
-
     public function addArgument(string $name, string $desc = '', mixed $default = null)
     {
         $this->setArgs[] = [
@@ -43,8 +40,10 @@ final class Argv
     public function parse($argv)
     {
         foreach ($argv as $value) {
-            if (strpos($value, '-') === 0) {
+            if (str_starts_with($value, '--')) {
                 $opts_values[] = $value;
+            } elseif (str_starts_with($value, '-')) {
+                $opts_values = array_map(fn($v) => '-' . $v, str_split(ltrim($value, '-')));
             } else {
                 $args_values[] = $value;
             }

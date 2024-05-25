@@ -3,10 +3,10 @@
 use Sys\Console\Commands\ClearCache;
 use Sys\Console\Commands\ClearLog;
 use Sys\Console\Commands\ClearSess;
+use Sys\Console\Commands\MyUnit;
 use Sys\Console\Commands\Routes;
 use Sys\Console\Commands\ShowLog;
 use Sys\Console\Commands\Tables;
-// use Sys\Console\Commands\Test;
 use Sys\Create\Commands\CreateApi;
 use Sys\Create\Commands\CreateDB;
 use Sys\Create\Commands\CreateFiles;
@@ -40,6 +40,7 @@ return [
     'process:queue' => QueueWorker::class,
     'process:task' => TaskWorker::class,
     'do:migrate' => UpDown::class,
+    'do:test' => MyUnit::class,
     'show:migrations' => ShowMigrations::class,
     'show:mgrt' => ShowMigrations::class,
     'show:routes' => Routes::class,
