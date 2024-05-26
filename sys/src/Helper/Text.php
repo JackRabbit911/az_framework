@@ -26,10 +26,15 @@ final class Text extends Transliterator
         return strtolower(preg_replace('/(?<=.)[A-Z]/', '-$0', $string));
     }
 
+    public function fileToClassName($string, $remove_substr = './application/')
+    {
+        $string = str_replace([$remove_substr, '/', '.php'], ['', '\\', ''], $string);
+        return ucwords($string, '\\');
+    }
+
     private function dashesToCamelCase($string, $separator, $capitalizeFirstCharacter = false) 
     {
         $str = str_replace($separator, '', ucwords($string, $separator));
         return (!$capitalizeFirstCharacter) ? lcfirst($str) : $str;
     }
-
 }
