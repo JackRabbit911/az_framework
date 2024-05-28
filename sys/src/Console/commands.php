@@ -18,6 +18,8 @@ use Sys\Cron\Cron;
 use Sys\Cron\CronStop;
 use Sys\Cron\Worker\QueueWorker;
 use Sys\Cron\Worker\TaskWorker;
+use Sys\Fake\FakeSeedCommand;
+use Sys\Fake\FakeShowCommand;
 use Sys\Migrations\Commands\CreateMigrationCommand;
 use Sys\Migrations\Commands\CreateTableCommand;
 use Sys\Migrations\Commands\Show as ShowMigrations;
@@ -47,5 +49,7 @@ return [
     'show:tables' => Tables::class,
     'show:tasks' => ShowTasks::class,
     'show:log' => ShowLog::class,
+    'show:fake' => FakeShowCommand::class,
+    'seed:fake' => FakeSeedCommand::class,
     // 'debug:test' => Test::class,
 ];
