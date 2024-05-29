@@ -15,7 +15,7 @@ final class CallApi
         $this->query = ($args) ? '?' . http_build_query($args) : '';
     }
 
-    public function execute(?array $data = null)
+    public function execute(array $data = [])
     {
         $path = ltrim(str_replace('\\', '/', $this->classname), '/') . '/' . $this->method . $this->query;
         $client = new \GuzzleHttp\Client(['base_uri' => env('APP_HOST') . '/api/console/']);
