@@ -15,7 +15,7 @@ trait ComponentForm
 
     private function santize($data, $entity = null)
     {
-        $main = ['label', 'name', 'id', 'type', 'class', 'value', 'checked', 'placeholder', 'attributes'];
+        $main = ['label', 'name', 'id', 'type', 'class', 'value', 'checked', 'placeholder', 'attributes', 'extra'];
 
         foreach ($data as $key => &$attribute) {
             if ($key === 'form' || (is_string($attribute) && is_string($key))) {
