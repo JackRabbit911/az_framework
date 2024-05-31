@@ -26,7 +26,7 @@ final class Text extends Transliterator
         return strtolower(preg_replace('/(?<=.)[A-Z]/', '-$0', $string));
     }
 
-    public function fileToClassName($string, $remove_substr = './application/')
+    public function fileToClassName($string, $remove_substr = APPPATH)
     {
         $string = str_replace([$remove_substr, '/', '.php'], ['', '\\', ''], $string);
         return ucwords($string, '\\');
