@@ -40,7 +40,7 @@ final class MyUnit extends Command
             }
         }
 
-        $option = (!empty($array_opts)) ? ' ' . implode(' ', $array_opts) : ' ';
+        $option = (!empty($array_opts)) ? ' ' . implode(' ', $array_opts) . ' ' : ' ';
         
         foreach ($group as $test_group) {
             $this->do($this->commands[$test_group], $option);

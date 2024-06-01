@@ -24,7 +24,7 @@ class ValidationHandler
         // 'dob'          => ['regexp', '/^[\d]{4}[\-]{1}[0-2]{2}[\d]{2}[\-]{1}$/']
         ];
 
-    public function _is_callable($funcName)
+    public function _is_callable($funcName): bool
     {
         return (isset($this->datatypes[$funcName]) || method_exists($this, $funcName));
     }
@@ -102,7 +102,7 @@ class ValidationHandler
         return ($value === '' || $value === null) ? false : true;
     }
 
-    public function valid_date($value, $format = 'Y-m-d')
+    public function validDate($value, $format = 'Y-m-d')
     {
         if(empty($value)) return true;
 
