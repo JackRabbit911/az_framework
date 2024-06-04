@@ -40,6 +40,11 @@ class App
         return null;
     }
 
+    public function form($instance)
+    {
+        return $instance;
+    }
+
     public function request($psr = false)
     {
         return request($psr);

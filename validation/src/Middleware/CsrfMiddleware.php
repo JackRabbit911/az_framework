@@ -28,6 +28,7 @@ class CsrfMiddleware implements MiddlewareInterface
             }
 
             unset($data['_csrf']);
+            $session->remove('_csrf');
             $request = $request->withParsedBody($data);
         }
 

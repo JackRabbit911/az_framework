@@ -183,7 +183,7 @@ function createCsrf()
     $salt = $_SERVER['HTTP_USER_AGENT'] ?? uniqid();
     $token = md5($salt.time().bin2hex(random_bytes(12)));
     $session = container()->get(SessionInterface::class);
-    $session->flash('_csrf', $token);
+    $session->set('_csrf', $token);
     return $token;
 }
 

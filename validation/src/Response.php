@@ -3,6 +3,7 @@
 namespace Az\Validation;
 
 use Closure;
+use Psr\Http\Message\UploadedFileInterface;
 use ReflectionMethod;
 use ReflectionFunction;
 
@@ -52,6 +53,12 @@ final class Response
                     'value' => $data[$name] ?? false,
                     'msg' => $this->msg->get('success'),
                 ];
+
+                if (is_string($data[$name])) {
+                    $this->response[$name]['value'] = $data[$name];
+                } elseif ($data[$name] instanceof UploadedFileInterface) {
+                    $this->response[$name]['value'] = $data[$name]->getClientFilename();
+                }
             }
         }
 

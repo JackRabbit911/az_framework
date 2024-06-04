@@ -39,34 +39,34 @@ final class Resolver
         );
     }
 
-    private function setReflectionRarameters($handler, $params)
-    {
-        if (is_array($handler) && method_exists($handler[0], $handler[1])) {
-            $refMethod = new ReflectionMethod($handler[0], $handler[1]);
-        } elseif (is_string($handler)) {
-            if (function_exists($handler)) {
-                $refMethod = new ReflectionFunction($handler);
-            } else {
-                $refMethod = new ReflectionMethod($handler);
-            }           
-        }
+    // private function setReflectionRarameters($handler, $params)
+    // {
+    //     if (is_array($handler) && method_exists($handler[0], $handler[1])) {
+    //         $refMethod = new ReflectionMethod($handler[0], $handler[1]);
+    //     } elseif (is_string($handler)) {
+    //         if (function_exists($handler)) {
+    //             $refMethod = new ReflectionFunction($handler);
+    //         } else {
+    //             $refMethod = new ReflectionMethod($handler);
+    //         }           
+    //     }
 
-        if (isset($refMethod)) {
-            foreach ($refMethod->getParameters() as $k => $refParam) {
-                $key = ':' . $refParam->getName();
+    //     if (isset($refMethod)) {
+    //         foreach ($refMethod->getParameters() as $k => $refParam) {
+    //             $key = ':' . $refParam->getName();
 
-                if (!array_key_exists($k, $params)) {
-                    if ($refParam->isDefaultValueAvailable()) {
-                        $value = $refParam->getDefaultValue();
-                    }
-                } else {
-                    $value = $params[$k];
-                }
+    //             if (!array_key_exists($k, $params)) {
+    //                 if ($refParam->isDefaultValueAvailable()) {
+    //                     $value = $refParam->getDefaultValue();
+    //                 }
+    //             } else {
+    //                 $value = $params[$k];
+    //             }
 
-                if (isset($value) && is_scalar($value)) {
-                    $result[$key] = $value;
-                }
-            }
-        } 
-    }
+    //             if (isset($value) && is_scalar($value)) {
+    //                 $result[$key] = $value;
+    //             }
+    //         }
+    //     } 
+    // }
 }
