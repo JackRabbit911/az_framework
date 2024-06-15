@@ -44,6 +44,11 @@ class SimpleRequest
         return $this->request->getUri()->getQuery();
     }
 
+    public function queryParams()
+    {
+        return $this->request->getQueryParams();
+    }
+
     public function get()
     {
         return $this->request->getQueryParams();
