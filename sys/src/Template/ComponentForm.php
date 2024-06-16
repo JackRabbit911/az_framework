@@ -6,66 +6,32 @@ use Az\Session\SessionInterface;
 
 trait ComponentForm
 {
-    private function _render($data, $entity = null)
+    private function _render()
     {
-        $data = $this->santize($data, $entity);
+        $data = $this->prepare($this->attributes);
         $data = $this->validate($data);
         return view($this->view, $data);
     }
 
-    private function santize($data, $entity = null)
+    private function prepare($attributes)
     {
-        $main = ['label', 'name', 'id', 'type', 'class', 'value', 'checked', 'placeholder', 'attributes', 'extra'];
+        $pattern = '[\[|\]|\.]';
+        $attrs = [];
 
-        foreach ($data as $key => &$attribute) {
-            if ($key === 'form' || (is_string($attribute) && is_string($key))) {
-                continue;
+        foreach ($attributes as $key => &$attribute) {
+            $arr_keys = preg_split($pattern, $key, -1, PREG_SPLIT_NO_EMPTY);
+
+            while (!empty($arr_keys)) {
+                $last_key = array_pop($arr_keys);
+                $res[$last_key] = $attribute;
+                $attribute = $res;
+                $res = [];
             }
 
-            if (is_int($key)) {
-                unset($data[$key]);
-                $data[$attribute] = [];
-                $key = $attribute;
-                $attribute = [];
-            }
-
-            if (!isset($attribute['name'])) {
-                $attribute['name'] = $key;
-            }
-
-            if (!isset($attribute['label'])) {
-                $attribute['label'] = ucfirst($attribute['name']);
-            }
-
-            if (isset($entity->$key)) {
-                $attribute['value'] = $entity->$key;
-            }
-
-            $arr = [];
-
-            foreach ($attribute as $k => &$v) {
-                if (!in_array($k, $main) && $v !== 'checked') {
-                    if (is_int($k)) {
-                        $arr[] = $v;
-                    } elseif ($v === true) {
-                        $arr[] = $k;    
-                    } elseif ($v !== false && !empty($v)) {
-                        $arr[] = $k . '="' . $v . '"';
-                    }
-
-                    unset($attribute[$k]);
-                } elseif ($v === 'checked') {
-                    unset($attribute[$k]);
-                    $attribute['checked'] = true;
-                } elseif ($k === 'checked') {
-                    $attribute['checked'] = $this->isTrue($v);
-                }
-
-                $attribute['attributes'] = implode(' ', $arr);
-            }           
+            $attrs = array_merge_recursive($attrs, $attribute);
         }
 
-        return $data;
+        return $attrs;
     }
 
     private function validate($data)

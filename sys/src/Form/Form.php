@@ -18,20 +18,12 @@ class Form extends Component
         'url', 'week', 'textarea', 'select',
     ];
 
-    // protected array $attributes = [
-    //     'label', 'name', 'id', 'type', 'class', 'value', 'checked',
-    //     'placeholder', 'attributes', 'extra',
-    // ];
-
-    // public string $title = '';
+    protected array $attributes = [];
     protected array $data = [];
 
-    public function render(mixed $entity = null)
+    public function render()
     {
-        $data = $this->santize($this->data, $entity);
-        $data = $this->validate($data);
-
-        return view($this->view, $data);
+        return $this->_render();
     }
 
     public function __call($func, $arguments)
@@ -48,54 +40,63 @@ class Form extends Component
 
     public function __isset($name)
     {
-        return (isset($this->$name) || isset($this->_data[$name]));
+        return (isset($this->$name) || isset($this->attributes[$name]));
     }
 
     public function __get($name)
     {
-        return $this->$name ?? $this->data[$name] ?? null;
+        return $this->$name ?? $this->attributes[$name] ?? null;
     }
 
     public function form($view)
     {
         $this->view = $view;
-        $this->data['form'] = [];
+        $this->attributes['form'] = [];
         return $this;
     }
 
     public function title(?string $title = null)
     {
         if ($title) {
-            $this->data['title'] = $title;
+            $this->attributes['title'] = $title;
             return $this;
         }
 
-        return $this->data['title'];
+        return $this->attributes['title'];
+    }
+
+    public function set(string $name, $value)
+    {
+        $this->data[$name] = $value;
     }
 
     private function setInput(string $func, ?string $name = null, array $attributes = [])
     {
         $name = (($name)) ?: $func;
         $attributes['type'] = $func;
+
+        if (!isset($attributes['name'])) {
+            $attributes['name'] = $name;
+        }
         
         if (!isset($attributes['label'])) {
             $attributes['label'] = ucfirst($name);
         }
 
-        $this->data[$name] = $attributes;
+        $this->attributes[$name] = $attributes;
 
         return $this;
     }
 
     private function setAttr($func, $value)
     {
-        $name = array_key_last($this->data);
-        $this->data[$name][$func] = $value;
+        $name = array_key_last($this->attributes);
+        $this->attributes[$name][$func] = $value;
         return $this;
     }
 
     public function getData()
     {
-        return $this->data;
+        return $this->attributes;
     }
 }
