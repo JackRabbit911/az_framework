@@ -10,9 +10,7 @@ trait ComponentForm
     {
         $data = $this->validate($this->attributes);
         $data = $this->prepare($data);
-        
-        // dd($data);
-        return view($this->view, $data);
+        return view($this->view, $data + $this->data);
     }
 
     private function prepare($attributes)
