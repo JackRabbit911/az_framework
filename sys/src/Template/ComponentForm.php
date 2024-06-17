@@ -8,8 +8,10 @@ trait ComponentForm
 {
     private function _render()
     {
-        $data = $this->prepare($this->attributes);
-        $data = $this->validate($data);
+        $data = $this->validate($this->attributes);
+        $data = $this->prepare($data);
+        
+        // dd($data);
         return view($this->view, $data);
     }
 

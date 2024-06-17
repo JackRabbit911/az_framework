@@ -28,13 +28,12 @@ class Form extends Component
 
     public function __call($func, $arguments)
     {
-        $name = array_shift($arguments) ?? $func;
-
         if (in_array($func, $this->inputs)) {
-
+            $name = array_shift($arguments) ?? $func;
             return $this->setInput($func, $name, $arguments[0] ?? []);
         }
 
+        $name = array_shift($arguments) ?? '';
         return $this->setAttr($func, $name);
     }
 
@@ -84,7 +83,6 @@ class Form extends Component
         }
 
         $this->attributes[$name] = $attributes;
-
         return $this;
     }
 
