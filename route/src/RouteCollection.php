@@ -108,7 +108,7 @@ final class RouteCollection implements RouteCollectionInterface
 
         if (isset($this->allowAttribute[$this->groupPrefix]) && $this->allowAttribute[$this->groupPrefix]) {
             $route->allowAttribute($this->allowAttribute[$this->groupPrefix]);
-            dd($this->allowAttribute[$this->groupPrefix]);
+            // dd($this->allowAttribute[$this->groupPrefix]);
         }
         
         if ($name) {
