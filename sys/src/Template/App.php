@@ -5,6 +5,7 @@ namespace Sys\Template;
 class App
 {
     private array $objects = [];
+    private array $scripts = [];
 
     public function __call($name, $arguments)
     {
@@ -48,5 +49,17 @@ class App
     public function request($psr = false)
     {
         return request($psr);
+    }
+
+    public function js(?string $file = null)
+    {
+        if ($file) {
+            $this->scripts[] = $file;
+            return;
+        }
+
+        $scripts = array_map(fn($v) => '<script src="' . $v . '"></script>', array_unique($this->scripts));
+
+        return implode('<br>', $scripts);
     }
 }
