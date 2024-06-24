@@ -18,7 +18,7 @@ class ModelTable implements Insertable
 
     public function insert($data): int
     {
-        $insertIds = $this->qb->table('users')->insert($data);       
+        $insertIds = $this->qb->table($this->table)->insert($data);       
         return count($insertIds);
     }
 }

@@ -26,7 +26,7 @@ use Sys\Migrations\Commands\Show as ShowMigrations;
 use Sys\Migrations\Commands\UpDown;
 
 return [
-    // 'list' => ListCommands::class,
+    'list' => ListCommands::class,
     'clear:log' => ClearLog::class,
     'clear:cache' => ClearCache::class,
     'clear:sess' => ClearSess::class,

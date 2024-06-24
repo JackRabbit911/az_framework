@@ -50,8 +50,11 @@ class App
         }
 
         $config = container()->get(Config::class);
-        return $config->addPath(__DIR__ . '/')
+
+        $class = $config->addPath(__DIR__ . '/')
             ->enable(false)
             ->get('commands', $command);
+
+        return container()->get($class);
     }
 }
