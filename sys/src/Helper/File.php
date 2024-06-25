@@ -256,4 +256,21 @@ class File
     {
         return $this->mimes[$extension];
     }
+
+    public function extByImageType($mime, $dot = true)
+    {
+        $mimes = [
+            'image/jpeg' => 'jpg',
+            'image/png' => 'png',
+            'image/gif' => 'gif',
+        ];
+
+        $ext = $mimes[$mime] ?? false;
+
+        if (!$ext) {
+            return '';
+        }
+
+        return ($dot) ? '.' . $ext : $ext;
+    }
 }
