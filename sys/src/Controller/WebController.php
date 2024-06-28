@@ -64,4 +64,13 @@ abstract class WebController extends BaseController
     {
         return new HtmlResponse($string);
     }
+
+    protected function referer($default = null)
+    {
+        if (!$default) {
+            $default = url('home');
+        }
+
+        return $this->request->getServerParams()['HTTP_REFERER'] ?? $default;
+    }
 }
