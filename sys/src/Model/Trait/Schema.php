@@ -46,7 +46,7 @@ trait Schema
         return $columns;
     }
 
-    public function nexAI($table = null): int
+    public function nextAI($table = null): int
     {
         if (!$table) {
             $table = $this->table;
