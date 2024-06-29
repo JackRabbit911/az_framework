@@ -1,5 +1,6 @@
 <?php
 
+use Sys\Console\Commands\ListCommands;
 use Sys\Console\Commands\ClearCache;
 use Sys\Console\Commands\ClearLog;
 use Sys\Console\Commands\ClearSess;
@@ -11,7 +12,6 @@ use Sys\Create\Commands\CreateApi;
 use Sys\Create\Commands\CreateDB;
 use Sys\Create\Commands\CreateFiles;
 use Sys\Create\Commands\CreateMvc;
-use Sys\Create\Commands\ListCommands;
 use Sys\Cron\Command\CreateTask;
 use Sys\Cron\Command\ShowTasks;
 use Sys\Cron\Cron;
