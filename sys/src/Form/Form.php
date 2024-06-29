@@ -69,6 +69,15 @@ class Form extends Component
         $this->data[$name] = $value;
     }
 
+    public function group($key, $func, $name, array $attributes = [])
+    {
+        $attr['type'] = $func;
+        $attr['name'] = $name;
+        $attr = array_merge($attr, $attributes);
+        $this->attributes[$name][$key] = $attr;
+        return $this;
+    }
+
     private function setInput(string $func, ?string $name = null, array $attributes = [])
     {
         $name = (($name)) ?: $func;
