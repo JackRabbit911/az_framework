@@ -115,6 +115,11 @@ class ValidationHandler
         }
     }
 
+    public function inRange($value, $min, $max)
+    {
+        return $min <= $value || $value <= $max;
+    }
+
     /***  functions for uploaded files  ***/
     
     public function notEmpty(UploadedFileInterface $upFile)
