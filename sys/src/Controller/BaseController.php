@@ -32,6 +32,29 @@ abstract class BaseController implements MiddlewareInterface
         return $response;
     }
 
+    protected function addQuery($param, $uri = null)
+    {
+        if ($uri) {
+            $path = parse_url($uri, PHP_URL_PATH);
+            $query = parse_url($uri, PHP_URL_QUERY) ?? '';
+        } else {
+            $uri = $this->request->getUri();
+            $path = $uri->getPath();
+            $query = $uri->getQuery() ?? '';
+        }
+
+        parse_str($query, $r1);
+
+        if (is_string($param)) {
+            parse_str($param, $param);
+        }
+
+        $result = array_merge($r1, $param);
+        $query_str = http_build_query($result);
+
+        return (!empty($query_str)) ? $path . '?' . $query_str : $path;
+    }
+
     protected function _before() {}
 
     protected function _after(&$response) {}
