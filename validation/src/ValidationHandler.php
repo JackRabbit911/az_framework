@@ -120,6 +120,11 @@ class ValidationHandler
         return $min <= $value || $value <= $max;
     }
 
+    public function inArray($value, ...$array)
+    {
+        return in_array($value, $array);
+    }
+
     /***  functions for uploaded files  ***/
     
     public function notEmpty(UploadedFileInterface $upFile)
