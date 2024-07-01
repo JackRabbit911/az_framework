@@ -40,9 +40,9 @@ final class Db implements SessionHandlerInterface
 
     public function write(string $id, string $data): bool
     {
-        $sql = "REPLACE INTO sessions VALUES (?, ?, ?)";
+        $sql = "REPLACE INTO sessions VALUES (?, NOW(), ?)";
         $sth = $this->pdo->prepare($sql);
-        $sth->execute([$id, time(), $data]);
+        $sth->execute([$id, $data]);
         return true;
     }
 
@@ -58,7 +58,7 @@ final class Db implements SessionHandlerInterface
     {
         $past = time() - $maxlifetime;
 
-        $sql = "DELETE FROM sessions WHERE last_activity < ?";
+        $sql = "DELETE FROM sessions WHERE last_activity (NOW() - INTERVAL ? SECOND)";
         $sth = $this->pdo->prepare($sql);
         $sth->execute([$past]);
 
@@ -72,11 +72,9 @@ final class Db implements SessionHandlerInterface
 
     public function delete(string $id, int $maxlifetime)
     {
-        $past = time() - $maxlifetime;
-
-        $sql = "DELETE FROM sessions WHERE last_activity < ? AND id = ?";
+        $sql = "DELETE FROM sessions WHERE last_activity < (NOW() - INTERVAL ? SECOND) AND id = ?";
         $sth = $this->pdo->prepare($sql);
-        $sth->execute([$past, $id]);
+        $sth->execute([(int) $maxlifetime, $id]);
 
         return $sth->rowCount();
     }
