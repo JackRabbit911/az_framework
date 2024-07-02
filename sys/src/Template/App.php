@@ -9,9 +9,9 @@ class App
 
     public function __call($name, $arguments)
     {
-        return (is_object($this->objects[$name]))
-        ? $this->objects[$name]
-        : call_user_func_array($this->objects[$name], $arguments);
+        return (is_callable($this->objects[$name]))
+        ? call_user_func_array($this->objects[$name], $arguments)
+        : $this->objects[$name];
     }
 
     public function add($key, $obj)
