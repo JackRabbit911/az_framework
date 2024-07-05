@@ -44,9 +44,41 @@ class SimpleRequest
         return $this->request->getUri()->getQuery();
     }
 
-    public function queryParams()
+    public function queryParams($key = null)
     {
-        return $this->request->getQueryParams();
+        return ($key) ? $this->request->getQueryParams()[$key] ?? null : $this->request->getQueryParams();
+    }
+
+    public function addQuery(array|string $param)
+    {
+        $uri = $this->request->getUri();
+        $path = $uri->getPath();
+        $query = $uri->getQuery() ?? '';
+
+        parse_str($query, $result);
+
+        if (is_string($param)) {
+            parse_str($param, $param);
+        }
+
+        $result = array_merge($result, $param);
+        $query_str = http_build_query($result);
+
+        return (!empty($query_str)) ? $path . '?' . $query_str : $path;
+    }
+
+    public function rmQuery(string $key)
+    {
+        $uri = $this->request->getUri();
+        $path = $uri->getPath();
+        $query = $uri->getQuery() ?? '';
+
+        parse_str($query, $result);
+
+        unset($result[$key]);
+        $query_str = http_build_query($result);
+
+        return (!empty($query_str)) ? $path . '?' . $query_str : $path;
     }
 
     public function get()

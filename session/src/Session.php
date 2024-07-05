@@ -174,6 +174,25 @@ final class Session implements SessionInterface
         }
     }
 
+    public function add($key, $value, $unique = true)
+    {
+        $this->init();
+
+        if (!isset($this->session[$key])) {
+            $array = [];
+        } else {
+            $array = (array) $this->session[$key];
+        }
+
+        $array = array_merge($array, (array) $value);
+        
+        if ($unique) {
+            $array = array_unique($array);
+        }
+
+        $this->session[$key] = $array;
+    }
+
     public function flash($key, $value): void
     {
         $this->init();
