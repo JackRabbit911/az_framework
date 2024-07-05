@@ -49,7 +49,7 @@ class SimpleRequest
         return ($key) ? $this->request->getQueryParams()[$key] ?? null : $this->request->getQueryParams();
     }
 
-    public function addQuery(array|string $param)
+    public function addQuery(array|string $key, $value = null)
     {
         $uri = $this->request->getUri();
         $path = $uri->getPath();
@@ -57,11 +57,15 @@ class SimpleRequest
 
         parse_str($query, $result);
 
-        if (is_string($param)) {
-            parse_str($param, $param);
+        if (is_string($key)) {
+            if ($value) {
+                $add = [$key => $value];
+             } else {
+                parse_str($key, $add);
+             }
         }
 
-        $result = array_merge($result, $param);
+        $result = array_merge($result, $add);
         $query_str = http_build_query($result);
 
         return (!empty($query_str)) ? $path . '?' . $query_str : $path;
@@ -76,6 +80,30 @@ class SimpleRequest
         parse_str($query, $result);
 
         unset($result[$key]);
+        $query_str = http_build_query($result);
+
+        return (!empty($query_str)) ? $path . '?' . $query_str : $path;
+    }
+
+    public function rpQuery($key_to_remove, $key_to_add, $value = null)
+    {
+        $uri = $this->request->getUri();
+        $path = $uri->getPath();
+        $query = $uri->getQuery() ?? '';
+
+        parse_str($query, $result);
+
+        if (is_string($key_to_add)) {
+            if ($value) {
+                $add = [$key_to_add => $value];
+            } else {
+                parse_str($key_to_add, $add);
+            }
+        }
+
+        unset($result[$key_to_remove]);
+        $result = array_merge($result, $add);
+
         $query_str = http_build_query($result);
 
         return (!empty($query_str)) ? $path . '?' . $query_str : $path;

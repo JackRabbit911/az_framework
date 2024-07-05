@@ -197,8 +197,15 @@ final class Session implements SessionInterface
     {
         $this->init();
 
+        if (!isset($this->session[$key])) {
+            return;
+        }
+
         $k = array_search($value, $this->session[$key]);
-        unset($this->session[$key][$k]);
+
+        if ($k !== false) {
+            unset($this->session[$key][$k]);
+        }
     }
 
     public function flash($key, $value): void
