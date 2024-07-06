@@ -56,11 +56,9 @@ final class Db implements SessionHandlerInterface
 
     public function gc(int $maxlifetime): int|false
     {
-        $past = time() - $maxlifetime;
-
-        $sql = "DELETE FROM sessions WHERE last_activity (NOW() - INTERVAL ? SECOND)";
+        $sql = "DELETE FROM sessions WHERE last_activity < (NOW() - INTERVAL ? SECOND)";
         $sth = $this->pdo->prepare($sql);
-        $sth->execute([$past]);
+        $sth->execute([(int) $maxlifetime]);
 
         return $sth->rowCount();
     }
