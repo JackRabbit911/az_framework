@@ -22,7 +22,7 @@ final class Files
             $replace = [ucfirst($name), $name];
             $file = $path . str_replace($search, $replace, $paths[$type]);
 
-            if (is_file($file)) {
+            if (is_file(APPPATH . $file)) {
                 $warnings[] = $file;
                 continue;
             }
@@ -88,7 +88,7 @@ final class Files
         $model_namespace .= '\\' . $model_classname;
 
         return [
-            'php' => '<?php' . PHP_EOL,
+            'php' => '<?php declare(strict_types=1);' . PHP_EOL,
             'namespace' => $namespace,
             'classname' => $name,
             'model_namespace' => $model_namespace,

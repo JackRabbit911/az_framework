@@ -1,10 +1,10 @@
-<?=$php?> declare(strict_types=1);
+<?=$php?>
 
 namespace <?=$namespace?>;
 
 use Sys\Controller\WebController;
 
-final class <?=$classname?> extends WebController
+class <?=$classname?> extends WebController
 {
     public function __construct()
     {

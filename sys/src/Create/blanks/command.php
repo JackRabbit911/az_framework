@@ -4,7 +4,7 @@ namespace <?=$namespace?>;
 
 use Sys\Console\Command;
 
-final class <?=$classname?> extends Command
+class <?=$classname?> extends Command
 {
     protected function configure()
     {
