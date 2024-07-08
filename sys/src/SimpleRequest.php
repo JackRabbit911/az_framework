@@ -63,6 +63,8 @@ class SimpleRequest
              } else {
                 parse_str($key, $add);
              }
+        } else {
+            $add = $key;
         }
 
         $result = array_merge($result, $add);
