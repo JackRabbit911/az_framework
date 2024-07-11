@@ -169,13 +169,14 @@ function findPath($path, $all = false)
     }
 }
 
-function json(?string $string)
+function json(?string $string, $unique = false)
 {
     if (empty($string)) {
         return [];
     }
 
-    return json_decode($string, true) ?? [];
+    $array = json_decode($string, true) ?? [];
+    return ($unique) ? array_unique($array) : $array;
 }
 
 function createCsrf()

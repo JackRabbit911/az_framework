@@ -29,8 +29,8 @@ class TemplateFactory
             return url($routeName, $params);
         }));
 
-        $twig->addFunction(new TwigFunction('json', function ($string) {
-            return json($string);
+        $twig->addFunction(new TwigFunction('json', function ($string, $unique = false) {
+            return json($string, $unique);
         }));
 
         $twig->addFunction(new TwigFunction('csrf', function () {
