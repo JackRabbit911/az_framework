@@ -106,4 +106,9 @@ class Form extends Component
     {
         return $this->attributes;
     }
+
+    public function isTrue($attr) {
+        $yes = ["1", "yes", "on", "true", "checked", 1];
+        return (in_array($attr, $yes) || $attr === true) ? true : false;
+    }
 }
