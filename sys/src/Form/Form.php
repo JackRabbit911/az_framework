@@ -64,9 +64,13 @@ class Form extends Component
         return $this->attributes['title'];
     }
 
-    public function set(string $name, $value)
+    public function set(string|array $name, $value = null)
     {
-        $this->data[$name] = $value;
+        if (is_array($name)) {
+            $this->data = array_replace($this->data, $name);
+        } else {
+            $this->data[$name] = $value;
+        }
     }
 
     public function group($key, $func, $name, array $attributes = [])
