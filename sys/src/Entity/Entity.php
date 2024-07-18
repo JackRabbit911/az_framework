@@ -36,7 +36,19 @@ abstract class Entity implements JsonSerializable
     public function update(array $data)
     {
         foreach ($data as $key => $value) {
-            $this->set($key, $value);
+            if (property_exists($this, $key)) {
+                if (is_array($this->$key) && is_array($value)) {
+                    $this->$key = array_replace_recursive($this->$key, $value);
+                } else {
+                    $this->$key = $value;
+                }
+            } else {
+                if (isset($this->_data[$key]) && is_array($this->_data[$key]) && is_array($value)) {
+                    $this->_data[$key] = array_replace_recursive($this->_data[$key], $value);
+                } else {
+                    $this->_data[$key] = $value;
+                }
+            }
         }
 
         return $this;
