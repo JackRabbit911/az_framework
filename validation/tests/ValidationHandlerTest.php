@@ -73,6 +73,14 @@ final class ValidationHandlerTest extends TestCase
         $this->assertFalse($this->validator->maxLength('qwerty', 5));
     }
 
+    public function testMaxWordsCount()
+    {
+        $str = 'Дорогой John, это было восхитительно!';
+        $this->assertTrue($this->validator->maxWordsCount($str, 7));
+        $this->assertTrue($this->validator->maxWordsCount($str, 5));
+        $this->assertFalse($this->validator->maxWordsCount($str, 4));
+    }
+
     public function testMinValue()
     {
         $this->assertTrue($this->validator->minValue(5, 5));

@@ -77,6 +77,15 @@ class ValidationHandler
         return (mb_strlen($value) > $max) ? false : true;
     }
 
+    public function maxWordsCount($value, $max): bool
+    {
+        if (!is_string($value)) {
+            throw new \InvalidArgumentException('The expected argument must be of type string');
+        }
+
+        return count(explode(' ', $value)) <= $max;
+    }
+
     public function boolean($value): bool
     {
         return is_bool(filter_var($value, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE));
