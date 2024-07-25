@@ -44,37 +44,32 @@ class ValidationHandler
 
     public function regexp($value, $regex): bool
     {
-        if(empty($value)) return true;
-        return (preg_match($regex, $value) === 0) ? false : true;
+        return (empty($value)) ? true : preg_match($regex, $value) !== 0;
     }
 
     public function filter($value, $filter, $options = []): bool
     {
-        if(empty($value)) return true;
-        return (filter_var($value, $filter, $options) === false) ? false : true;
+        return (empty($value)) ? true : filter_var($value, $filter, $options) !== false;
     }
 
     public function confirm($value, $data, $field = 'password'): bool
     {
-        return ($value === $data[$field]) ? true : false;
+        return $value === $data[$field];
     }
 
     public function length($value, $min, $max): bool
     {
-        if(empty($value)) return true;
-        return (mb_strlen($value) < $min || mb_strlen($value) > $max) ? false : true;
+        return (empty($value)) ? true : (mb_strlen($value) >= $min && mb_strlen($value) <= $max);
     }
 
     public function minLength($value, $min): bool
     {
-        if(empty($value)) return true;
-        return (mb_strlen($value) < $min) ? false : true;
+        return (empty($value)) ? true : mb_strlen($value) >= $min;
     }
 
     public function maxLength($value, $max): bool
     {
-        if(empty($value)) return true;
-        return (mb_strlen($value) > $max) ? false : true;
+        return (empty($value)) ? true : mb_strlen($value) <= $max;
     }
 
     public function maxWordsCount($value, $max): bool
@@ -98,30 +93,23 @@ class ValidationHandler
 
     public function maxValue($value, $max): bool
     {
-        return ($value > $max) ? false : true;
+        return $value <= $max;
     }
 
     public function minValue($value, $min): bool
     {
-        return ($value < $min) ? false : true;
+        return $value >= $min;
     }
 
     public function required($value): bool
     {
-        return ($value === '' || $value === null) ? false : true;
+        return $value !== '' && $value !== null;
     }
 
     public function validDate($value, $format = 'Y-m-d')
     {
-        if(empty($value)) return true;
-
         $d = \DateTime::createFromFormat($format, $value);
-
-        if ($d && $d->format($format) == $value) {
-            return true;
-        } else {
-            return false;
-        }
+        return (empty($value)) ? true : ($d && $d->format($format) == $value);
     }
 
     public function inRange($value, $min, $max)
@@ -138,7 +126,7 @@ class ValidationHandler
     
     public function notEmpty(UploadedFileInterface $upFile)
     {
-        return ($upFile->getError() === UPLOAD_ERR_NO_FILE) ? false : true;
+        return ($upFile->getError() !== UPLOAD_ERR_NO_FILE);
     }
 
     public function size(UploadedFileInterface $upFile, $size)
@@ -146,6 +134,7 @@ class ValidationHandler
         if ($upFile->getError() === UPLOAD_ERR_INI_SIZE) {
             return false;
         }
+
         return ($upFile->getSize() <= $this->human2byte($size));
     }
 
@@ -155,7 +144,7 @@ class ValidationHandler
             return true;
         }
 
-        return (in_array($upFile->getClientMediaType(), $mimes)) ? true : false;
+        return in_array($upFile->getClientMediaType(), $mimes);
     }
 
     public function ext(UploadedFileInterface $upFile, ...$extensions)
@@ -165,7 +154,7 @@ class ValidationHandler
         }
         
         $ext = pathinfo($upFile->getClientFilename(), PATHINFO_EXTENSION);
-        return (in_array(strtolower($ext), $extensions)) ? true : false;
+        return in_array(strtolower($ext), $extensions);
     }
 
     public function type(UploadedFileInterface $upFile, $type)
@@ -173,8 +162,8 @@ class ValidationHandler
         if ($upFile->getError() === UPLOAD_ERR_NO_FILE) {
             return true;
         }
-        
-        return (strpos($upFile->getClientMediaType(), $type) === 0) ? true : false;
+
+        return (strpos($upFile->getClientMediaType(), $type) === 0);
     }
 
     public function img(UploadedFileInterface $upFile)
@@ -185,8 +174,7 @@ class ValidationHandler
 
         $ext = pathinfo($upFile->getClientFilename(), PATHINFO_EXTENSION);
         return (in_array(strtolower($ext), ['jpg', 'jpeg', 'png', 'gif']) 
-            && strpos($upFile->getClientMediaType(), 'image') === 0) 
-            ? true : false;
+            && strpos($upFile->getClientMediaType(), 'image') === 0);
     }
 
     private function human2byte($value) {
