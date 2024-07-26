@@ -25,6 +25,7 @@ return [
     'minValue'      => 'Value cannot be less than :min',
     'yes'           => 'Need an affirmative answer',
     'maxWordsCount' => 'The string must be no more than :max words long',
+    'hex_color'     => 'Invalid color code',
 
     'required_one_of'=> 'One of the fields: (:fields) must be filled',
     'email_or_phone' => 'The entered data does not match the email or phone number format',

@@ -35,6 +35,14 @@ final class ValidationHandlerTest extends TestCase
         $this->assertFalse($this->validator->_is_callable('notExistFunction'));
     }
 
+    public function testHexColor()
+    {
+        $this->assertTrue($this->validator->hex_color('#012abc'));
+        $this->assertTrue($this->validator->hex_color('#ABCDEF'));
+        $this->assertTrue($this->validator->hex_color('#ABC'));
+        $this->assertFalse($this->validator->hex_color('#ABCDEG'));
+    }
+
     public function testRegexp()
     {
         $this->assertTrue($this->validator->regexp('Hello', '/\w/'));

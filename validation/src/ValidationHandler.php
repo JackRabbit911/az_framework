@@ -21,6 +21,7 @@ class ValidationHandler
         'text_utf8'    => ['regexp', '/^[^<>]*$/u'],
         'phone'        => ['regexp', '/^[\+\s\d\-()]{3,20}$/'],
         'phone_strict' => ['regexp', '/^[\d]{11,11}$/'],
+        'hex_color'    => ['regexp', '/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/'],
         // 'dob'          => ['regexp', '/^[\d]{4}[\-]{1}[0-2]{2}[\d]{2}[\-]{1}$/']
         ];
 
