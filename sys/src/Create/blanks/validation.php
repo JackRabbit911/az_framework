@@ -24,6 +24,6 @@ final class <?=$classname?> extends ValidationMiddleware
 
 //    protected function debug($request, $data)
 //    {
-//        dd($this->validation->getResponse(), $modifyData);
+//        dd($this->validation->getResponse(), $data);
 //    }
 }
