@@ -3,21 +3,27 @@
 namespace <?=$namespace?>;
 
 use Az\Validation\Middleware\ValidationMiddleware;
+use Psr\Http\Message\ServerRequestInterface;
 
 final class <?=$classname?> extends ValidationMiddleware
 {
-    protected function setRules()
+    protected function setRules($request)
     {
         $this->validation->rule('fieldname', 'required|minLength(8)');
     }
 
-    protected function modifyData()
-    {
-        
-    }
-
-//    protected function debug()
+//    protected function modifyRequest($request, $data): ServerRequestInterface
 //    {
-//        dd($data, $this->validation->getResponse());
+//        return $request;
+//    }
+
+//    protected function modifyData($data)
+//    {
+//        return $data;
+//    }
+
+//    protected function debug($request, $data)
+//    {
+//        dd($this->validation->getResponse(), $modifyData);
 //    }
 }

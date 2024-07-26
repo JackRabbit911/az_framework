@@ -28,12 +28,15 @@ abstract class ValidationMiddleware implements MiddlewareInterface
             return $handler->handle($request);
         }
         
-        $this->setRules($request);
         $data = ($request->getMethod() === 'GET') ? $request->getQueryParams() : $request->getParsedBody();
+        
+        $this->setRules($request);
 
         $data = $this->validate($request, $data);
 
-        $this->debug($request);
+        $request = $this->modifyRequest($request, $data);
+
+        $this->debug($request, $data);
 
         $GLOBALS['request'] = $request;
 
@@ -46,6 +49,11 @@ abstract class ValidationMiddleware implements MiddlewareInterface
     protected function setPath() {}
 
     protected function setRules(ServerRequestInterface $request) {}
+
+    protected function modifyRequest(ServerRequestInterface $request, ?array $data): ServerRequestInterface
+    {
+        return $request;
+    }
 
     protected function modifyData($data) {
         return $data;
@@ -69,5 +77,5 @@ abstract class ValidationMiddleware implements MiddlewareInterface
         return new RedirectResponse($request->getServerParams()['HTTP_REFERER'], 302);
     }
 
-    protected function debug(ServerRequestInterface $request) {}
+    protected function debug(ServerRequestInterface $request, $data) {}
 }
