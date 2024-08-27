@@ -43,29 +43,42 @@ trait ComponentForm
         if ($validationResponse) {
             foreach ($data as $key => &$attribute) {
                 if (isset($validationResponse[$key])) {
-                    $attribute = array_replace($attribute, $validationResponse[$key]);
-
-                    if ($attribute['type'] == 'select') {
-                        if ($validationResponse[$key]['status'] === 'success' && !empty($validationResponse[$key]['value'])) {
-                            foreach ($attribute['options'] as &$option) {
-                                if ($option['value'] == $attribute['value']) {
-                                    $option['selected'] = true;
-                                } else {
-                                    $option['selected'] = false;
-                                }
-                            }
-                        }
-                    } elseif (in_array($attribute['type'], ['checkbox', 'radio'])) {
-                        if ($validationResponse[$key]['status'] === 'success' && !empty($validationResponse[$key]['value'])) {
-                            $attribute['checked'] = true;
-                        } else {
-                            $attribute['checked'] = false;
-                        }
-                    }
+                    $attribute = $this->attributeValidation($attribute, $validationResponse[$key]);
                 }
-            }           
-        } 
+            }
+        }
 
         return $data;
+    }
+
+    private function attributeValidation($attribute, $validationResponse)
+    {
+        if (isset($attribute['type'])) {
+            if ($attribute['type'] === 'select' && !empty($validationResponse['value'])) {
+                foreach ($attribute['options'] as &$option) {
+                    if ($option['value'] == $validationResponse['value']) {
+                        $option['selected'] = true;
+                    } else {
+                        $option['selected'] = false;
+                    }
+                }           
+            } elseif ($attribute['type'] === 'checkbox' && !empty($validationResponse['value'])) {
+                if ((is_array($validationResponse['value']) 
+                    && in_array($attribute['value'], $validationResponse['value'])) 
+                    || ($attribute['value'] == $validationResponse['value'])) {
+                    $attribute['checked'] = true;
+                } else {
+                    $attribute['checked'] = false;
+                }
+            }
+
+            return (array_replace($validationResponse, $attribute));           
+        }
+
+        foreach ($attribute as $k => &$attr) {
+            $attr = $this->attributeValidation($attr, $validationResponse);
+        }
+
+        return $attribute;
     }
 }
