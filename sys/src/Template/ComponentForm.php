@@ -45,20 +45,27 @@ trait ComponentForm
                 if (isset($validationResponse[$key])) {
                     $attribute = array_replace($attribute, $validationResponse[$key]);
 
-                    if ($validationResponse[$key]['value'] === false) {
-                        $attribute['checked'] = false;
-                    } else {
-                        $attribute['checked'] = true;
+                    if ($attribute['type'] == 'select') {
+                        if ($validationResponse[$key]['status'] === 'success' && !empty($validationResponse[$key]['value'])) {
+                            foreach ($attribute['options'] as &$option) {
+                                if ($option['value'] == $attribute['value']) {
+                                    $option['selected'] = true;
+                                } else {
+                                    $option['selected'] = false;
+                                }
+                            }
+                        }
+                    } elseif (in_array($attribute['type'], ['checkbox', 'radio'])) {
+                        if ($validationResponse[$key]['status'] === 'success' && !empty($validationResponse[$key]['value'])) {
+                            $attribute['checked'] = true;
+                        } else {
+                            $attribute['checked'] = false;
+                        }
                     }
                 }
             }           
         } 
 
         return $data;
-    }
-
-    private function isTrue($attr) {
-        $yes = ["1", "yes", "on", "true", "checked", 1];
-        return (in_array($attr, $yes) || $attr === true) ? true : false;
     }
 }
