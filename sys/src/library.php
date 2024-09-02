@@ -46,6 +46,7 @@ function env(string $key, $default = null)
     $entry = match ($entry) {
         'on', 'yes', 'true' => true,
         'no', 'off', 'false' => false,
+        'null' => null,
         default => $entry,
     };
 
