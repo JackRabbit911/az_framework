@@ -27,7 +27,7 @@ class Mail implements Iterator, JsonSerializable
     private array $data = [];
 
     #[\ReturnTypeWillChange]
-    public function jsonSerialize() {
+    public function jsonSerialize(): mixed {
         return [
             'draft' => $this->draft,
             '_data' => $this->_data,
