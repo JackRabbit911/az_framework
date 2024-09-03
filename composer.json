@@ -30,6 +30,16 @@
     },
     "require-dev": {
         "fakerphp/faker": "^1.22",
-        "ottaviano/faker-gravatar": "^0.2.0"
+        "ottaviano/faker-gravatar": "^0.2.0",
+        "phpunit/phpunit": "^11",
+        "mockery/mockery": "^1.6"
+    },
+    "autoload-dev": {
+        "psr-4": { 
+            "Tests\\Az\\Route\\": "vendor/az/route/tests/",
+            "Tests\\Az\\Session\\": "vendor/az/session/tests/",
+            "Tests\\Az\\Validation\\": "vendor/az/validation/tests/",
+            "Tests\\Sys\\": "vendor/az/sys/tests/"
+        }
     }
 }
