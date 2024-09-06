@@ -1,4 +1,14 @@
 {
+    "name": "az/az_framework",
+    "description": "Simple lightweight modern component psr compatible PHP framework",
+    "keywords": ["php", "psr", "framework"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Alexey Zaytsev",
+            "email": "world.zay@gmail.com"
+        }
+    ],
     "require": {
         "php-di/php-di": "^7.0",
         "monolog/monolog": "^3.3",
