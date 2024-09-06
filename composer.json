@@ -1,5 +1,5 @@
 {
-    "name": "az/az_framework",
+    "name": "jackrabbit911/az_framework",
     "description": "Simple lightweight modern component psr compatible PHP framework",
     "keywords": ["php", "psr", "framework"],
     "license": "MIT",
